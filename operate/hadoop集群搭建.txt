@@ -1,0 +1,262 @@
+参考地址：	https://www.cnblogs.com/pu20065226/p/8464156.html
+			https://blog.csdn.net/shayuwei/article/details/89158419#12_CentOS7_47
+			https://www.cnblogs.com/thousfeet/p/8618696.html
+操作系统：Ubuntu 19.04		/		centos 7
+
+
+
+
+1.ubuntu的ip设为静态ip(17版本以上的设置方式)(root用户操作)
+	1)vim /etc/netplan/*.yaml
+			# This file describes the network interfaces available on your system
+			# For more information, see netplan(5).
+			network:
+			version: 2
+			renderer: networkd
+			ethernets:
+				ens33:
+				dhcp4: no
+				addresses: [192.168.38.128/24, ]
+				gateway4: 192.168.38.1
+				ens38:
+				dhcp4: no
+				addresses: [172.18.21.19/16, ]
+				gateway4: 172.189.0.1
+				nameservices:
+					address:[144.144.144.144]
+	2)netplan apply				
+
+2 创建hadoop用户
+$ sudo groupadd hadoop									#创建组
+$ sudo useradd -g hadoop -m hadoop -s /bin/bash 		#创建用户
+$ sudo passwd hadoop 									#修改密码
+$ sudo adduser hadoop sudo 								#添加管理员权限
+
+3.网络设置
+1)主机名
+	查看主机名：		hostname
+	修改主机名：	
+		临时：			hostname 新主机名		#换一个ssh就能看到
+		永久：			vim /etc/hostname   	#把里面的主机名换掉即可，需要重启才能生效
+
+2)主机名与ip的映射
+	vim etc/hosts	
+
+3)设置SSH无密码登录节点(双向免密即重复操作一次)
+	让Master能够通过SSH无密码登录各个Slave节点
+	如果修改过主机名，需要重新生成的新的公钥。
+	在Master上执行如下命令(hadoop用户)：
+		$ ssh-keygen -t rsa										# 执行该命令后，遇到提示信息，一直按回车就可以
+		$ cd .ssh												# 进入.ssh目录
+		$ chmod 600 *											# 需要将 id_rsa.pub 的权限 和 id_rsa 一样，600
+		$ scp id_rsa.pub hadoop@Slave01:/home/hadoop/			# 将Master中的id_rsa.pub文件复制到各个Slave节点中
+
+	slave01节点上运行(hadoop用户下)	
+		$ ssh-keygen -t rsa										#执行该命令后，遇到提示信息，一直按回车就可以
+		$ cat id_rsa.pub >> .ssh/authorized_keys
+
+	在Master中验证是否可以无密码登录，各个Slave节点。
+		$ ssh Slave01 #如果成功登录，则配置完成
+
+
+
+防火墙操作
+启动：					systemctl start firewalld
+查看状态：				systemctl status firewalld 
+禁用，禁止开机启动：	systemctl disable firewalld
+停止运行：				systemctl stop firewalld
+
+新增端口				firewall-cmd --zone=public --add-port=80/tcp --permanent
+删除端口				firewall-cmd --zone=public --remove-port=80/tcp --permanent
+重载端口				firewall-cmd --reload
+查看端口				firewall-cmd --list-ports
+
+
+
+
+
+4.hadoop及jdk配置(/etc/profile)
+	#JAVA_HOME
+	export JAVA_HOME=/usr/java/jdk1.8.0_221
+	export PATH=$JAVA_HOME/bin:$PATH
+	export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+
+	#HADOOP_HOME
+	export HADOOP_HOME=/usr/hadoop/hadoop-3.1.2
+	export PATH=$PATH:$HADOOP_HOME/bin
+	export PATH=$PATH:$HADOOP_HOME/sbin
+	
+	
+5.hadoop的配置文件修改（全分布式）
+	hadoop-env.sh			export JAVA_HOME=/usr/java/jdk1.8.0_221
+							export HDFS_NAMENODE_USER=root                 #文件角色的用户指定
+							export HDFS_DATANODE_USER=root
+							export HDFS_SECONDARYNAMENODE_USER=root
+	core-site.xml			<configuration>									#主节点配置文件
+								<property>
+									<name>fs.defaultFS</name>				#主节点
+									<value>hdfs://master:9000</value>
+								</property>
+								<property>
+									<name>hadoop.tmp.dir</name>				#hadoop临时文件目录
+									<value>/usr/hadoop/tmp</value>
+								</property>
+							</configuration>
+	hdfs-site.xml			<configuration>
+								<property>
+									<name>dfs.replication</name>
+									<value>3</value>
+								</property>
+								<property>
+									<name>dfs.namenode.secondary.http-address</name>
+									<value>slave1:9868</value>
+								</property>
+							</configuration>
+	workers					slave1
+							slave2
+							slave3
+
+start-dfs.sh
+stop-dfs.sh
+
+
+
+
+
+6.hadoop配置文件修改（HA）
+	hadoop-env.sh			export JAVA_HOME=/usr/java/jdk1.8.0_221
+							export HDFS_NAMENODE_USER=root                 #文件角色的用户指定
+							export HDFS_DATANODE_USER=root
+							export HDFS_ZKFC_USER=root
+							export HDFS_JOURNALNODE_USER=root
+	core-site.xml			<configuration>									#主节点配置文件
+								<property>
+									<name>fs.defaultFS</name>                               #主节点
+									<value>hdfs://mycluster</value>
+								</property>
+								<property>
+									<name>hadoop.tmp.dir</name>                             #hadoop临时文件目录
+									<value>/usr/hadoop/hadoop-3.1.2/ha</value>
+								</property>
+								<property>
+									<name>ha.zookeeper.quorum</name>
+									<value>slave1:2181,slave2:2181,slave3:2181</value>
+								</property>
+							</configuration>
+	hdfs-site.xml			<configuration>
+								<property>
+									<name>dfs.replication</name>
+									<value>3</value>
+								</property>
+								<property>
+									<name>dfs.nameservices</name>
+									<value>mycluster</value>
+								</property>
+								<property>
+									<name>dfs.ha.namenodes.mycluster</name>
+									<value>nn1,nn2</value>
+								</property>
+								<property>
+									<name>dfs.namenode.rpc-address.mycluster.nn1</name>
+									<value>master:8020</value>
+								</property>
+								<property>
+									<name>dfs.namenode.rpc-address.mycluster.nn2</name>
+									<value>slave1:8020</value>
+								</property>
+								<property>
+									<name>dfs.namenode.http-address.mycluster.nn1</name>
+									<value>master:9870</value>
+								</property>
+								<property>
+									<name>dfs.namenode.http-address.mycluster.nn2</name>
+									<value>slave1:9870</value>
+								</property>
+								<property>
+									<name>dfs.namenode.shared.edits.dir</name>
+									<value>qjournal://master:8485;slave1:8485;slave2:8485/mycluster</value>
+								</property>
+								<property>
+									<name>dfs.client.failover.proxy.provider.mycluster</name>
+									<value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+								</property>
+								<property>
+									<name>dfs.ha.fencing.methods</name>
+									<value>sshfence</value>
+								</property>
+								<property>
+									<name>dfs.ha.fencing.ssh.private-key-files</name>
+									<value>/root/.ssh/id_rsa</value>
+								</property>
+								<property>
+									<name>dfs.journalnode.edits.dir</name>
+									<value>/usr/hadoop/hadoop-3.1.2/ha/journalnode</value>
+								</property>
+								<property>
+									<name>dfs.ha.automatic-failover.enabled</name>
+									<value>true</value>
+								</property>
+							</configuration>
+
+
+
+7.zookeeper配置
+官网下载apache-zookeeper-3.5.6-bin.tar.gz
+添加zookeeper到slave1，slave2，slave3
+解压zookeeper
+	etc/profile : 
+		#ZK_HOME
+		export ZOOKEEPER_HOME=/usr/zookeeper/apache-zookeeper-3.5.6
+		export PATH=$PATH:$ZOOKEEPER_HOME/bin
+mv conf/zoo-sample.cfg conf/zoo.cfg
+	conf/zoo.cfg：
+		dataDir=/usr/zookeeper/apache-zookeeper-3.5.6/data	（修改）
+		server.1=slave1:2888:3888							（新增）
+		server.2=slave2:2888:3888							（新增）
+		server.3=slave3:2888:3888							（新增）
+mkdir /usr/zookeeper/apache-zookeeper-3.5.6/data
+echo 1 > data/myid											（对应zoo.cfg的server）
+echo 2 > data/myid
+echo 3 > data/myid
+
+zkServer.sh start		启动zk集群，只有超过半数节点开启后才启动集群（2181，2888，3888）
+zkServer.sh status		查看集群状态
+zkServer.sh stop		关闭当前节点
+
+zkCli.sh				进入集群客户端
+	help				查看帮助
+	ls 目录				查看目录
+	get 目录			获取注册信息
+
+
+
+
+8.启动hdfs
+启动journalnode			hdfs --daemon start journalnode		(master,slave1,slave2，并开放端口8485)
+格式化namenode			hdfs namenode -format				(namenode选择一个启动，master/slave1)
+						hdfs --daemon start namenode		(master启动namenode，开放namenode节点端口8020)
+						hdfs namenode -bootstrapStandby		(slave1同步，先保证有一个namenode启动)
+启动ha的zk				hdfs zkfc -formatZK
+启动hdfs				start-dfs.sh
+
+
+
+
+
+hdfs命令行指令
+haddop fs -ls /     (查询目录)
+hadoop fs -mkdir /test      （在根目录下创建一个目录test）
+hadoop fs -put ./test.txt /test     （将本地的test.txt文件上传到HDFS根目录下的test文件夹中去）   
+hadoop fs -copyFromLocal ./test.txt /test   （同上）
+hadoop fs -get /test/test.txt   （从HDFS目录中获取文件）
+hadoop fs -getToLocal /test/test.txt    （同上）
+hadoop fs -cp /test/test.txt /test1 （HDFS内部的复制）
+hadoop fs -rm /test1/test.txt   （移除）
+hadoop fs -mv /test/test.txt /test1  （如果两个参数中所包含的文件是再用一个文件夹下则该指令为重命名，如果两个文件不再同一个文件夹下则该指令为移动）
+hadoop fs -rm -r /test1  （删除文件夹）
+hadoop fs -help ls (查阅帮助，该命令为查看ls命令)
+hadoop fs -cat README.txt（查看README.txt文件的内容，hadoop的cat命令的输出也可以使用管道传递给Unix 命令的head：hadoop fs -cat README.txt | head；Hadoop也支持tail命令查看最后一千字节。例如要查阅README.txt最后一千个字节，可以执行如下命令：hadoop fs -tail README.txt）
+
+
+
+

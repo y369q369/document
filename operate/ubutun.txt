@@ -1,0 +1,51 @@
+ubutun
+密码：123987
+
+
+查看linux的版本号： lsb_release -a 
+
+
+把用户加入到sudo中	vi /etc/sudoers  -> root ALL=(ALL) ALL  下面追加一行用户
+
+
+设置jdk的全局变量
+	export JAVA_HOME=/usr/java/jdk1.8.0_221
+	export PATH=$PATH:$JAVA_HOME/bin
+
+
+创建文件的指令 ： 	touch 文件名   
+					cat > 文件名
+
+vi指令：			ZQ  /   :q!   				不保存退出
+					ZZ  /   :wq  /  :x			保存退出
+					/需要查找的内容	[数字]		查找内容   （按n下一个）
+					shift + g 					跳到末尾
+					
+					
+					
+解压
+tar.gz		tar -xzvf 文件名 [目标位置]		
+tar			tar -xvf  文件名 [目标位置]
+zip			unzip 文件名 [目标位置]
+rar			unrar 文件名 [目标位置]
+
+
+查找文件路径		find / -name 文件名        （支持模糊查，但是要加上''）
+
+
+
+
+创建组：		sudo groupadd hadoop
+创建用户 ：	 	sudo useradd -g hadoop -m hadoop -s /bin/bash 
+				sudo passwd hadoop 
+赋管理员权限： 	sudo adduser hadoop sudo 
+删除用户：		sudo userdel hadoop
+
+
+
+	
+	
+	
+
+
+ 

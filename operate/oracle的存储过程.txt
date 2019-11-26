@@ -1,0 +1,103 @@
+存储过程的基本语法
+CREATE OR REPLACE PROCEDURE 存储过程名(param1 in type,param2 out type)
+　IS/AS
+　变量1 类型(值范围);
+　变量2 类型(值范围);　　
+　BEGIN
+　　　select count(*) into 变量1 from 表名 where 列名=param1;
+　　　if (判断条件) then
+　　　　　select 列名 into 变量2 from 表名 where 列名=param1;
+　　　　　DBMS_OUTPUT.put_line('打印信息');
+　　　Elsif (判断条件) then
+　　　　　dbms_output.put_line('打印信息');
+　　　Else
+　　　　　Raise 异常名 (NO_DATA_FOUND);
+　　　End if;
+　Exception
+　　　　　When others then
+　　　　　　　Rollback; 　　
+　END;
+
+
+
+一、无参数的存储过程
+创建或修改
+create or replace procedure myDemo01
+as
+begin
+  dbms_output.put_line('hello word, my name is stored procedure');
+end;
+
+
+create or replace procedure mydemo02
+as
+  v_total int;
+  v_date varchar2(20);
+begin
+  select count(0) into v_total from dual;
+  select to_char(sysdate, 'yyyy-mm-dd HH24:mi:ss') into v_date from dual;
+  dbms_output.put_line('总人数 ： ' || v_total);
+  dbms_output.put_line('当前时间 ： ' || v_date);
+end;
+
+调用  
+begin
+  myDemo01;
+end;
+
+begin
+  mydemo02;
+end;
+
+
+二、仅带输入参数的存储过程
+create or replace procedure myDemo03(test2 in varchar2)
+as
+  test1 number;
+begin
+  select test1 into test1 from test1 where test2 = test2;
+  dbms_output.put_line(test1);
+end;
+
+调用
+begin
+  myDemo03(1);
+end;
+
+
+三、仅带输出参数的存储过程
+create or replace procedure mydemo04(testout out number)
+as
+begin
+  select test1 into testout from test1 where test1 = 1;
+  exception
+    when no_data_found then dbms_output.put_line('no_data_found');
+end;
+
+
+调用
+declare
+  testout number;
+begin
+  mydemo04(testout);
+  dbms_output.put_line(testout);
+end;
+
+
+四、带输入输出参数的存储过程
+create or replace procedure mydemo05(testin in varchar2, testout out number)
+as
+begin
+  select test1 into testout from test1 where test2 = testin;
+  dbms_output.put_line(testout);
+  exception
+    when no_data_found then dbms_output.put_line('no_data_found');
+end;
+
+调用：
+declare
+  testout number;
+begin
+  mydemo05(2, testout);
+end;
+
