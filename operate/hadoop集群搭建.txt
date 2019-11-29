@@ -70,7 +70,7 @@ $ sudo adduser hadoop sudo 								#添加管理员权限
 删除端口				firewall-cmd --zone=public --remove-port=80/tcp --permanent
 重载端口				firewall-cmd --reload
 查看端口				firewall-cmd --list-ports
-
+需要开启的端口：2181，2888，3888，9870，8485，8020
 
 
 
@@ -85,6 +85,10 @@ $ sudo adduser hadoop sudo 								#添加管理员权限
 	export HADOOP_HOME=/usr/hadoop/hadoop-3.1.2
 	export PATH=$PATH:$HADOOP_HOME/bin
 	export PATH=$PATH:$HADOOP_HOME/sbin
+	
+	#ZK_HOME
+	export ZOOKEEPER_HOME=/usr/zookeeper/apache-zookeeper-3.5.6
+	export PATH=$PATH:$ZOOKEEPER_HOME/bin
 	
 	
 5.hadoop的配置文件修改（全分布式）
@@ -197,7 +201,9 @@ stop-dfs.sh
 									<value>true</value>
 								</property>
 							</configuration>
-
+	workers					slave1
+							slave2
+							slave3
 
 
 7.zookeeper配置
@@ -209,7 +215,7 @@ stop-dfs.sh
 		export ZOOKEEPER_HOME=/usr/zookeeper/apache-zookeeper-3.5.6
 		export PATH=$PATH:$ZOOKEEPER_HOME/bin
 mv conf/zoo-sample.cfg conf/zoo.cfg
-	conf/zoo.cfg：
+	conf/zoo.cfg(后面不要有tab或空格)：
 		dataDir=/usr/zookeeper/apache-zookeeper-3.5.6/data	（修改）
 		server.1=slave1:2888:3888							（新增）
 		server.2=slave2:2888:3888							（新增）
@@ -233,18 +239,18 @@ zkCli.sh				进入集群客户端
 
 8.启动hdfs
 启动journalnode			hdfs --daemon start journalnode		(master,slave1,slave2，并开放端口8485)
-格式化namenode			hdfs namenode -format				(namenode选择一个启动，master/slave1)
+格式化namenode			hdfs namenode -format				(namenode选择一个启动，master/slave1，可以先删除ha/journalnode/目录下的文件)
 						hdfs --daemon start namenode		(master启动namenode，开放namenode节点端口8020)
 						hdfs namenode -bootstrapStandby		(slave1同步，先保证有一个namenode启动)
-启动ha的zk				hdfs zkfc -formatZK
-启动hdfs				start-dfs.sh
+启动ha的zk				hdfs zkfc -formatZK					(master)
+启动hdfs				start-dfs.sh						(master)
 
 
 
 
 
 hdfs命令行指令
-haddop fs -ls /     (查询目录)
+hadoop fs -ls /     (查询目录)
 hadoop fs -mkdir /test      （在根目录下创建一个目录test）
 hadoop fs -put ./test.txt /test     （将本地的test.txt文件上传到HDFS根目录下的test文件夹中去）   
 hadoop fs -copyFromLocal ./test.txt /test   （同上）
@@ -256,6 +262,23 @@ hadoop fs -mv /test/test.txt /test1  （如果两个参数中所包含的文件�
 hadoop fs -rm -r /test1  （删除文件夹）
 hadoop fs -help ls (查阅帮助，该命令为查看ls命令)
 hadoop fs -cat README.txt（查看README.txt文件的内容，hadoop的cat命令的输出也可以使用管道传递给Unix 命令的head：hadoop fs -cat README.txt | head；Hadoop也支持tail命令查看最后一千字节。例如要查阅README.txt最后一千个字节，可以执行如下命令：hadoop fs -tail README.txt）
+
+
+查看namenode状态
+hdfs haadmin -getServiceState nn2
+
+
+
+
+
+对某些jps的注释
+QuorumPeerMain				zk启动的进程
+ZooKeeperMain				zkCli客户端启动的进程（可以通过quit关闭客户端，close关闭连接）
+JournalNode					journalnode启动进程
+DFSZKFailoverController		zkfc的故障转移
+
+
+
 
 
 
