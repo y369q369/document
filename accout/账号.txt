@@ -3,6 +3,7 @@
 66.6.52.189			 ：		 dsadm  /   dsadmin             yangq/yangq
 66.5.254.58			 :		 kf5	/	kf5
 66.5.50.101			 :		 wuchaoqun	/	123456			wuyougang/wuyougang
+http://66.3.163.206/cqweb/	 yangqing	/	1qaz!QAZ
 
 
 集群地址
@@ -14,7 +15,12 @@ http://66.3.47.91:8180/
 
 
 邮箱    
-qing.yang@transwarp.cn   
+qing.yang@transwarp.cn   /   Yq2018..
+
+
+
+
+人脸识别					xh4gly	/	88888888
 
 
 TU学习平台

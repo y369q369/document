@@ -1,0 +1,4 @@
+获取项目目录
+Test.class.getResource("").getPath()
+System.getProperty("user.dir")
+Test.class.getProtectionDomain().getCodeSource().getLocation().getPath()				项目根目录

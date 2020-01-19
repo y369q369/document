@@ -1,0 +1,3 @@
+jmeter
+安装：		https://blog.csdn.net/wust_lh/article/details/86095924
+使用：		https://blog.csdn.net/yaorongke/article/details/82799609

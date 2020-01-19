@@ -1,0 +1,43 @@
+下载node.js,    https://nodejs.org/en/(windows版本下载：...LTS)
+安装后自动安装node和npm两个包，   (npm可以理解为maven仓库的前端js库)
+node -v
+npm -v
+
+
+设置npm的全局安装位置
+npm set cache F:\nodejs\node_cache
+npm set prefix F:\nodejs\node_global
+
+
+安装相应的包
+npm install -g cnpm --registry=http://registry.npm.taobao.org						cnpm镜像
+cnpm install -g vue-cli																vue-cli脚手架
+cnpm install -g webpack																webpack，js打包
+cnpm install -g @vue/cli															vue的ui界面
+
+
+
+
+
+
+vue组件里面的prop值，可以直接输入，需要用到调用组件的内容时先绑定
+e.g. 		<test content="gg"></test>				直接输入内容
+			<test :content="content"></test>		引用content的内容
+
+
+
+
+
+
+
+ajax和axios区别
+ajax：
+本身是针对MVC的编程,不符合现在前端MVVM的浪潮
+基于原生的XHR开发，XHR本身的架构不清晰，已经有了fetch的替代方案
+JQuery整个项目太大，单纯使用ajax却要引入整个JQuery非常的不合理（采取个性化打包的方案又不能享受CDN服务
+axios：
+从 node.js 创建 http 请求
+支持 Promise API
+客户端支持防止CSRF
+提供了一些并发请求的接口（重要，方便了很多的操作）
+
