@@ -1,0 +1,6 @@
+移除hyper-v角色。
+（1）以管理员身份（win + x）运行命令提示符；
+（2）执行命令：bcdedit /set hypervisorlaunchtype off
+（3）重启系统，运行vm即可。
+如果想要恢复hyper启动：
+bcdedit / set hypervisorlaunchtype auto

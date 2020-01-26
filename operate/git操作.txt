@@ -17,6 +17,7 @@ maven打包：		mvn install -Dmaven.test.skip=true
 
 
 修改文件
+	git merge dev			与dev分支合并(当前分支为主)
 	git status		  		查看修改文件
 	git add 文件名    		添加修改的文件
 	git commit -m '内容'	提交注释

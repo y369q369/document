@@ -1,0 +1,29 @@
+培训
+
+free -g
+
+
+
+运存：		64g内存
+内核：		2个6核
+存储盘：	500g 主硬盘
+			100g docker盘
+			100g 数据盘
+			
+			
+修改静态ip
+vim /etc/sysconfig/network/ifcfg-en...
+
+BOOTPROTO='static'
+IPADDR=192.168.130.151
+NETMASK=255.255.255.0
+GATEWAY=192.168.130.2（net-setting中看的）
+
+重启网络	service network restart
+
+
+查看分区	lsblk
+
+分区挂载	df -h
+
+fdisk -l

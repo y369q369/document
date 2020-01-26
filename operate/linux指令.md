@@ -1,5 +1,4 @@
 <center><h1>linux指令</h1></center>
-
 ### 1. find： 在指定目录下查找文件。
 
 #### 1.1 基本命令
@@ -120,6 +119,8 @@ grep [-abcEFGhHilLnqrsvVwxy][-A<显示列数>][-B<显示列数>][-C<显示列数
 
 ​    grep直接使用查找文件中内容，前面有ps,find等指令过滤前面指令的结果
 
+
+
 ### 4. vim：文本编辑器
 
 #### 4.1 指令快捷键
@@ -131,3 +132,62 @@ grep [-abcEFGhHilLnqrsvVwxy][-A<显示列数>][-B<显示列数>][-C<显示列数
 | :w filename                 | 另存为                                         |
 | :set number  /  :set  nu    | 显示行号（永久生效需要修改/etc/vim/vimrc文件） |
 | :set nonumber  /  :set nonu | 不显示行号                                     |
+
+
+
+### 5. chmod/chown： 权限
+
+ ll的输出内容：-rwxr-xr-x  5 root root  94 Jun 27 2017 xdg
+
+```
+7种文件类型(第一个-)
+		-：普通文件
+		d：目录文件
+		l： 软链接（类似Windows的快捷方式）
+		　　(下面四种是特殊文件)
+		b：块设备文件（例如硬盘、光驱等）
+		p：管道文件
+		c：字符设备文件（例如猫等串口设备）
+		s：套接口文件/数据接口文件（例如启动一个MySql服务器时会产生一个mysql.sock文件）
+```
+
+文件权限对应关系(rwxr-xr-x ：每三位为一组，分别为u,g,o)
+
+```
+r		4		可读
+w		2		可读
+x		1		可执行
+```
+
+chmod执行例子
+
+```
+chmod u-r,g+w xdg
+chmod u=rw,g=wx,o=rx xdg
+chmod a=wx xdg
+chmod 755 xdg
+```
+
+chown执行例子
+
+```
+chown -R   hadoop:hadoop /usr/local/hadoop-2.7.5
+```
+
+
+
+### 6. firewall： centos7防火墙及端口指令 	
+
+开启8000端口：firewall-cmd --zone=public(作用域) --add-port=8000/tcp(端口和访问类型) --permanent(永久生效)
+
+| 指令介绍           | 指令例子                                                     |
+| ------------------ | ------------------------------------------------------------ |
+| 开启防火墙         | systemctl start firewalld                                    |
+| 查看状态           | firewall-cmd --state                                         |
+| 查看已开放的端口   | firewall-cmd --list-ports                                    |
+| 开启端口           | firewall-cmd --zone=public --add-port=1521/tcp --permanent   |
+| 关闭端口           | firewall-cmd --zone= public --remove-port=8000/tcp --permanent |
+| 重启防火墙         | firewall-cmd --reload                                        |
+| 停止防火墙         | systemctl stop firewalld.service                             |
+| 禁止防火墙开机启动 | systemctl disable firewalld.service                          |
+
