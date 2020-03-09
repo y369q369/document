@@ -189,3 +189,5 @@ docker rename 原容器id/名 新容器名    (容器改名，先改name再改id
   解决方法：①需要在指令前加winpty；②用管理员登录的cmd运行指令
 
 - dockerFile的COPY和ADD只能复制当前目录下文件，不能复制其他目录下文件
+
+- 登录harbor需要在 settings - daemon - insecure registries 中加入 https://172.16.1.99/ 
