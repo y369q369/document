@@ -94,10 +94,13 @@ Settings  --  Devices   --  Keyboard  -- Typing  --  Switch to next input source
    sudo yum install <FQPN>  # 例如：sudo yum install docker-ce-17.12.0.ce
    ```
 
-8.  启动并加入开机启动
+8. 启动并加入开机启动
 
    ```
+   启动docker服务
    sudo systemctl start docker
+   
+   设置开机自动启动docker服务
    sudo systemctl enable docker
    ```
 
