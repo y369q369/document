@@ -141,7 +141,7 @@ ifconfig 命令用于获取网卡配置与网络状态等信息，其实主要�
   一般直接使用 ifconfig 即可
   ```
 
-- 执行结果
+- 演示案例
 
 ```
 grassprince@centos7-test ~]$ ifconfig
@@ -180,8 +180,6 @@ virbr0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
 
-
-
 #### 4.2 uname
 
 ```
@@ -202,7 +200,7 @@ uname 命令用于查看系统内核与系统版本等信息
   ubuntu / suse	:	cat /etc/issue
   ```
 
-- 执行效果
+- 演示案例
 
 ```
 [grassprince@centos7-test ~]$ uname -a
@@ -218,7 +216,7 @@ CentOS Linux release 7.7.1908 (Core)
 uptime 用于查看系统的负载信息，格式为 uptime
 ```
 
-- 执行结果
+- 演示案例
 
 ```
 [grassprince@centos7-test ~]$ uptime
@@ -232,7 +230,7 @@ uptime 用于查看系统的负载信息，格式为 uptime
 free 用于显示当前系统中内存的使用量信息, 常用 free -h 人性化展示结果
 ```
 
-- 结果说明
+- 演示案例 及说明
 
 |      | 内存总量 | 已用量 | 可用量 | 进程共享的内存量 | 磁盘缓存的内存量 | 缓存的内存量 |
 | ---- | -------- | ------ | ------ | ---------------- | ---------------- | ------------ |
@@ -251,7 +249,7 @@ swap：表示硬盘上交换分区的使用情况
 who 用于查看当前登入主机的用户终端信息，格式为 who
 ```
 
-- 执行结果
+- 演示案例
 
 ```
 [grassprince@centos7-test ~]$ who
@@ -267,7 +265,7 @@ last 命令用于查看所有系统的登录记录， 格式为 last
 注意： 由于这些信息都是以日志文件的形式保存在系统中，因此黑客可以很容易地对内容进行篡改。千万不要单纯以该命令的输出信息而判断系统有无被恶意入侵！
 ```
 
-- 执行结果
+- 演示案例
 
 ```
 [grassprince@centos7-test ~]$ last
@@ -298,7 +296,7 @@ history 命令用于显示当前用户历史执行过的命令， 格式为 hist
 历史路径被保存在 用户家目录 的 .bash_history 中
 ```
 
-- 实际使用
+- 演示案例
 
 ```
 获取历史使用记录
@@ -318,6 +316,217 @@ Desktop    Downloads    Music     Public     Videos
 Documents  gitReposity  Pictures  Templates
 
 清空所有命令历史记录：   history -c
+```
+
+
+
+### 5. 常用系统工作命令
+
+#### 5.1 echo
+
+```
+echo 命令用于在终端输出字符串或变量提取后的值， 格式为 echo [字符串 | $变量]
+```
+
+- 演示案例
+
+```
+输出字符串
+[grassprince@centos7-test document]$ echo Linuxprobe.com
+Linuxprobe.com
+
+输出变量
+[grassprince@centos7-test document]$ echo $PATH
+/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/home/grassprince/.local/bin:/home/grassprince/bin
+```
+
+#### 5.2 date
+
+```
+date 命令用于显示及设置系统的时间或日期，格式为 “date [选项] [+指定的格式]”。
+```
+
+- 演示案例
+
+```
+默认格式  查看当前系统时间
+[grassprince@centos7-test document]$ date
+Mon Mar 30 09:00:13 EDT 2020
+
+按照  “年-月-日 小时:分钟:秒”的格式  查看当前系统时间
+[grassprince@centos7-test document]$ date "+%Y-%m-%d %H:%M:%S"
+2020-03-30 09:01:35
+
+设置系统时间
+[grassprince@centos7-test document]$ sudo date -s "20190101 12:23:40"
+Tue Jan  1 12:23:40 EST 2019
+```
+
+#### 5.3 reboot
+
+```
+reboot 命令用于重启系统，其格式为 reboot。
+由于重启计算机这种操作会涉及硬件资源的管理权限，因此默认只能使用 root 管理员来重启
+```
+
+#### 5.4  poweroff
+
+```
+poweroff 命令用于关闭系统，其格式为 poweroff。
+该命令与 reboot 命令相同，都会涉及硬件资源的管理权限，因此默认只有 root 管理员才可以关闭电脑
+```
+
+#### 5.5  wget
+
+```
+wget 命令用于在终端中下载网络文件，格式为 “wget [参数] 下载地址”。
+```
+
+- 常用参数
+
+  | 参数 | 作用                                 |
+  | ---- | ------------------------------------ |
+  | -b   | 后台下载模式                         |
+  | -P   | 下载到指定目录                       |
+  | -t   | 最大尝试次数                         |
+  | -c   | 断点续传                             |
+  | -p   | 下载页面内所有资源，包括图片、视频等 |
+  | -r   | 递归下载                             |
+
+- 演示案例
+
+```
+下载 linuxprobe 到 /home/grassprince/Downloads/ 目录下
+[grassprince@centos7-test ~]$ wget -P /home/grassprince/Downloads/ http://www.linuxprobe.com/docs/LinuxProbe.pdf
+--2020-03-30 09:28:55--  http://www.linuxprobe.com/docs/LinuxProbe.pdf
+Resolving www.linuxprobe.com (www.linuxprobe.com)... 58.218.215.124
+Connecting to www.linuxprobe.com (www.linuxprobe.com)|58.218.215.124|:80... connected.
+HTTP request sent, awaiting response... 301 Moved Permanently
+Location: https://www.linuxprobe.com/docs/LinuxProbe.pdf [following]
+--2020-03-30 09:28:55--  https://www.linuxprobe.com/docs/LinuxProbe.pdf
+Connecting to www.linuxprobe.com (www.linuxprobe.com)|58.218.215.124|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 17176352 (16M) [application/pdf]
+Saving to: ‘/home/grassprince/Downloads/LinuxProbe.pdf’
+
+100%[======================================>] 17,176,352  7.39MB/s   in 2.2s   
+
+2020-03-30 09:28:57 (7.39 MB/s) - ‘/home/grassprince/Downloads/LinuxProbe.pdf’ saved [17176352/17176352]
+
+查看是否下载
+[grassprince@centos7-test ~]$ ll Downloads/
+total 16776
+-rw-rw-r--. 1 grassprince grassprince 17176352 Mar 24 01:14 LinuxProbe.pdf
+```
+
+#### 5.6 ps
+
+```
+ps 命令用于查看系统中的进程状态，格式为  ps [参数]
+```
+
+- 5中常见进程状态
+
+  | 符号          | 状态说明                                                     |
+  | ------------- | ------------------------------------------------------------ |
+  | R（运行）     | 进程正在运行或在运行队列中等待                               |
+  | S（中断）     | 进程处于休眠中，当某个条件形成后或者接收到信号时，则脱离该状态 |
+  | D（不可中断） | 进程不响应系统异步信号，即便用 kill 命令也不能将其中断       |
+  | Z（僵死）     | 进程已经终止，但进程描述符依然存在, 直到父进程调用 wait4()系统函数后将进程释放 |
+  | T（停止）     | 进程已经终止，但进程描述符依然存在, 直到父进程调用 wait4()系统函数后将进程释放 |
+
+- 演示案例 及 说明
+
+```
+[grassprince@centos7-test ~]$ ps aux
+```
+
+| 进程的所有者 | 进 程ID 号 | 运算器占用率 | 内 存占用率 | 虚 拟 内 存 使用量（单位是 KB） | 占用的固定内存量（单位是KB） | 所 在终端 | 进程状态 | 被启动的时间 | 实际使用CPU的时间 | 命令名称与参数 |
+| ------------ | ---------- | ------------ | ----------- | ------------------------------- | ---------------------------- | --------- | -------- | ------------ | ----------------- | -------------- |
+| USER         | PID        | %CPU         | %MEM        | VSZ                             | RSS                          | TTY       | STAT     | START        | TIME              | COMMAND        |
+| root         | 1          | 0.3          | 0.0         | 193960                          | 7008                         | ?         | Ss       | 09:26        | 0:01              | /usr/lib/syste |
+| root         | 2          | 0.0          | 0.0         | 0                               | 0                            | ?         | S        | 09:26        | 0:00              | [kthreadd]     |
+| root         | 3          | 0.0          | 0.0         | 0                               | 0                            | ?         | S        | 09:26        | 0:00              | [kworker/0:0]  |
+| root         | 4          | 0.0          | 0.0         | 0                               | 0                            | ?         | S<       | 09:26        | 0:00              | [kworker/0:0H] |
+| root         | 6          | 0.0          | 0.0         | 0                               | 0                            | ?         | S        | 09:26        | 0:00              | [ksoftirqd/0]  |
+| root         | 7          | 0.0          | 0.0         | 0                               | 0                            | ?         | S        | 09:26        | 0:00              | [migration/0]  |
+
+#### 5.7 top
+
+```
+top 命令用于动态地监视进程活动与系统负载等信息，其格式为 top
+```
+
+- 演示案例
+
+```
+[grassprince@centos7-test ~]$ top
+top - 09:47:02 up 20 min,  3 users,  load average: 0.27, 0.44, 0.33
+Tasks: 260 total,   1 running, 259 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.3 us,  1.9 sy,  0.0 ni, 97.8 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :  7990116 total,  4892888 free,  1545176 used,  1552052 buff/cache
+KiB Swap:  4063228 total,  4063228 free,        0 used.  5998904 avail Mem 
+
+   PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                    
+  2842 grasspr+  20   0 4071284 373580 141596 S   9.6  4.7   2:49.73 gnome-shell                
+  2101 root      20   0  560676 242644 138040 S   4.7  3.0   1:05.85 X                          
+  3448 grasspr+  20   0  737772  26112  15284 S   2.3  0.3   0:02.53 gnome-terminal-            
+  4506 grasspr+  20   0  162140   2392   1580 R   0.7  0.0   0:00.13 top                        
+     3 root      20   0       0      0      0 S   0.3  0.0   0:00.60 kworker/0:0
+```
+
+- 前五行 代表的含义
+
+```
+第 1 行：系统时间、运行时间、登录终端数、系统负载（三个数值分别为 1 min、 5 min、 15 min内的平均值，数值越小意味着负载越低）
+第 2 行：进程总数、运行中的进程数、睡眠中的进程数、停止的进程数、僵死的进程数
+第 3 行：用户占用资源百分比、系统内核占用资源百分比、改变过优先级的进程资源百分比、空闲的资源百分比等。
+		注：第 3 行中的数据均为 CPU 数据并以百分比格式显示，例如“97.1 id”意味着有 97.1%的 
+		CPU 处理器资源处于空闲。
+第 4 行：物理内存总量、内存使用量、内存空闲量、作为内核缓存的内存量。
+第 5 行：虚拟内存总量、虚拟内存使用量、虚拟内存空闲量、已被提前加载的内存量。
+```
+
+#### 5.8 pidof
+
+```
+pidof 命令用于查询某个指定服务进程的 PID 值，格式为  pidof [参数] [服务名称]
+```
+
+- 案例演示
+
+```
+查询本机上 sshd 服务程序的 PID
+[grassprince@centos7-test ~]$ pidof sshd
+1457
+```
+
+#### 5.9 kill
+
+```
+kill 命令用于终止某个指定 PID 的服务进程，格式为  kill [参数] [进程 PID]
+```
+
+- 案例演示
+
+```
+终止上一个查出的 sshd 服务
+[grassprince@centos7-test ~]$ sudo kill 1457
+```
+
+#### 5.10 killall
+
+```
+killall 命令用于终止某个指定名称的服务所对应的全部进程，格式为： killall [参数] [进程名称]
+通常来讲，复杂软件的服务程序会有多个进程协同为用户提供服务，如果逐个去结束这些进程会比较麻烦，此时可以使用 killall 命令来批量结束某个服务程序带有的全部进程
+```
+
+- 案例演示
+
+```
+[grassprince@centos7-test ~]$ pidof httpd
+13581 13580 13579 13578 13577 13576
+[grassprince@centos7-test ~]$ killall httpd
 ```
 
 

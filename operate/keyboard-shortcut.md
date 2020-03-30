@@ -19,6 +19,9 @@
 | ctrl + T         | 插入表格   |
 | ctrl + 1-5       | 标题等级   |
 | ctrl + shift + k | 生成代码块 |
+| ctr + b          | 字体加粗   |
+| ctr + \          | 清除格式   |
+| ctr + /          | 源代码模式 |
 
 ### 3. VMware
 
