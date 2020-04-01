@@ -531,6 +531,483 @@ killall 命令用于终止某个指定名称的服务所对应的全部进程，
 
 
 
+### 6. 工作目录切换命令
+
+#### 6.1 pwd
+
+```
+pwd 命令用于显示用户当前所处的工作目录，格式为  pwd [选项]
+```
+
+- 案例演示
+
+```
+[grassprince@centos7-test ~]$ pwd
+/home/grassprince
+```
+
+#### 6.2 cd 
+
+```
+cd 命令用于切换工作路径，格式为   cd [目录名称]
+```
+
+- 特殊符号
+
+  | command      | explanation                |
+  | ------------ | -------------------------- |
+  | cd ..        | 上一级目录                 |
+  | cd -         | 返回上一次目录             |
+  | cd ~         | 切换到当前用户的home目录下 |
+  | cd ~username | 切换到某用户的home目录下   |
+
+- 案例演示
+
+```
+切换到 /bin 目录
+[grassprince@centos7-test ~]$ cd /bin/
+[grassprince@centos7-test bin]$ pwd
+/bin
+```
+
+#### 6.3 ls
+
+```
+ls 命令用于显示目录中的文件信息，格式为   ls [选项] [文件] 
+```
+
+- 案例演示
+
+```
+显示正常文件
+[grassprince@centos7-test ~]$ ls
+Desktop    Downloads    Music     Public     Videos
+Documents  gitReposity  Pictures  Templates
+
+显示所有文件（包含隐藏文件）
+[grassprince@centos7-test ~]$ ls -a
+.              .bashrc  Documents    .ICEauthority  .pki
+..             .cache   Downloads    .local         Public
+.bash_history  .config  .esd_auth    .mozilla       Templates
+.bash_logout   .dbus    .gitconfig   Music          Videos
+.bash_profile  Desktop  gitReposity  Pictures       .viminfo
+
+显示正常文件并输出这些文件的属性信息， ll 等同于 ls -l
+[grassprince@centos7-test ~]$ ll
+total 0
+drwxr-xr-x. 2 grassprince grassprince 84 Mar 29 01:50 Desktop
+drwxr-xr-x. 2 grassprince grassprince 28 Mar 29 01:46 Documents
+drwxr-xr-x. 2 grassprince grassprince 28 Mar 30 09:28 Downloads
+drwxrwxr-x. 3 grassprince grassprince 22 Mar 28 23:43 gitReposity
+drwxr-xr-x. 2 grassprince grassprince  6 Mar 28 07:38 Music
+drwxr-xr-x. 2 grassprince grassprince  6 Mar 28 07:38 Pictures
+drwxr-xr-x. 2 grassprince grassprince  6 Mar 28 07:38 Public
+drwxr-xr-x. 2 grassprince grassprince  6 Mar 28 07:38 Templates
+drwxr-xr-x. 2 grassprince grassprince  6 Mar 28 07:38 Videos
+```
+
+
+
+### 7. 文本文件编辑命令
+
+#### 7.1 cat
+
+```
+cat 命令用于查看纯文本文件（内容较少的），格式为   cat [选项] [文件]
+```
+
+- 案例演示
+
+```
+显示.gitconfig文件信息
+[grassprince@centos7-test ~]$ cat .gitconfig 
+[user]
+	email = 1486866853@qq.com
+[push]
+	default = simple
+	
+显示.gitconfig文件信息（含行号）	
+[grassprince@centos7-test ~]$ cat -n .gitconfig
+     1	[user]
+     2		email = 1486866853@qq.com
+     3	[push]
+     4		default = simple
+
+```
+
+#### 7.2 more
+
+```
+more 命令用于查看纯文本文件（内容较多的），格式为   more [选项]文件
+```
+
+- 案例演示
+
+```
+查看 linux-command.md 文件，  可用 空格 和 回车 向下翻页
+[grassprince@centos7-test ~]$ more gitReposity/document/operate/linux-command.md 
+<center><h1>linux指令</h1></center>
+### 1. systemd 初始化进程
+
+	Linux 操作系统的开机过程是这样的，即从 BIOS 开始，然后进入 Boot Loader，
+再加
+载系统内核，然后内核进行初始化，最后启动初始化进程。初始化进程作为 Linux 系统的
+第一个进程，它需要完成 Linux 系统中相关的初始化工作，为用户提供合适的工作环境。
+
+#### 1.1 sytstemctl
+
+​```
+RHEL 6 系统 使用 service、 chkconfig 等命令来管理系统服务
+RHEL 7 系统 使用 systemctl 命令来管理服务
+​```
+
+- systemctl 管理服务的启动、重启、停止、重载、查看状态等常用命令
+
+| System V init （ RHEL 6 系统） | systemctl （ RHEL 7 系统）    | 作用         
+                  |
+| ------------------------------ | ----------------------------- | -------------
+----------------- |
+| service foo start              | systemctl start foo.service   | 启动服务     
+                  |
+--More--(3%)
+```
+
+#### 7.3 head
+
+```
+head 命令用于查看纯文本文档的前 N 行，格式为   head [选项] [文件]
+```
+
+- 案例演示
+
+```
+查看 文件 的前十行
+[grassprince@centos7-test ~]$ head -n 10 gitReposity/document/operate/linux-command.md 
+<center><h1>linux指令</h1></center>
+### 1. systemd 初始化进程
+
+	Linux 操作系统的开机过程是这样的，即从 BIOS 开始，然后进入 Boot Loader，再加
+载系统内核，然后内核进行初始化，最后启动初始化进程。初始化进程作为 Linux 系统的
+第一个进程，它需要完成 Linux 系统中相关的初始化工作，为用户提供合适的工作环境。
+
+#### 1.1 sytstemctl
+
+​```
+```
+
+#### 7.4 tail
+
+```
+tail 命令用于查看纯文本文档的后 N 行或持续刷新内容，格式为   tail [选项] [文件]
+```
+
+- 案例演示
+
+```
+查看 文档 的后十行
+[grassprince@centos7-test ~]$ tail -n 10 gitReposity/document/operate/linux-command.md 
+| ------------------ | ------------------------------------------------------------ |
+| 开启防火墙         | systemctl start firewalld                                    |
+| 查看状态           | firewall-cmd --state                                         |
+| 查看已开放的端口   | firewall-cmd --list-ports                                    |
+| 开启端口           | firewall-cmd --zone=public --add-port=1521/tcp --permanent   |
+| 关闭端口           | firewall-cmd --zone= public --remove-port=8000/tcp --permanent |
+| 重启防火墙         | firewall-cmd --reload                                        |
+| 停止防火墙         | systemctl stop firewalld.service                             |
+| 禁止防火墙开机启动 | systemctl disable firewalld.service                          |
+
+查看 文档 并刷新(不加行数默认显示10行)
+[grassprince@centos7-test ~]$ tailf gitReposity/document/operate/linux-command.md 
+| ------------------ | ------------------------------------------------------------ |
+| 开启防火墙         | systemctl start firewalld                                    |
+| 查看状态           | firewall-cmd --state                                         |
+| 查看已开放的端口   | firewall-cmd --list-ports                                    |
+| 开启端口           | firewall-cmd --zone=public --add-port=1521/tcp --permanent   |
+| 关闭端口           | firewall-cmd --zone= public --remove-port=8000/tcp --permanent |
+| 重启防火墙         | firewall-cmd --reload                                        |
+| 停止防火墙         | systemctl stop firewalld.service                             |
+| 禁止防火墙开机启动 | systemctl disable firewalld.service                          |
+
+```
+
+#### 7.5 tr
+
+```
+tr 命令用于替换文本文件中的字符，格式为    tr [原始字符] [目标字符]
+```
+
+- 案例演示
+
+```
+将 .bash_profile 文件展示， 并将 所有小写转为大写
+[grassprince@centos7-test ~]$ cat .bash_profile | tr [a-z] [A-Z]
+# .BASH_PROFILE
+
+# GET THE ALIASES AND FUNCTIONS
+IF [ -F ~/.BASHRC ]; THEN
+	. ~/.BASHRC
+FI
+
+# USER SPECIFIC ENVIRONMENT AND STARTUP PROGRAMS
+
+PATH=$PATH:$HOME/.LOCAL/BIN:$HOME/BIN
+
+EXPORT PATH
+```
+
+#### 7.6 wc
+
+```
+wc 命令用于统计指定文本的行数、字数、字节数，格式为   wc [参数] 文本
+```
+
+- 参数说明
+
+  | 参数 | 作用         |
+  | ---- | ------------ |
+  | -l   | 只显示行数   |
+  | -w   | 只显示单词数 |
+  | -c   | 只显示字节数 |
+
+- 案例演示
+
+```
+显示 /etc/passwd 文件中的单词数
+[grassprince@centos7-test ~]$ wc -w /etc/passwd
+90 /etc/passwd
+```
+
+#### 7.7 stat
+
+```
+stat 命令用于查看文件的具体存储信息和时间等信息，格式为  stat 文件名称
+```
+
+- 案例演示
+
+```
+[grassprince@centos7-test ~]$ stat gitReposity/document/operate/linux-command.md 
+  File: ‘gitReposity/document/operate/linux-command.md’
+  Size: 36235     	Blocks: 72         IO Block: 4096   regular file
+Device: fd02h/64770d	Inode: 16893873    Links: 1
+Access: (0664/-rw-rw-r--)  Uid: ( 1000/grassprince)   Gid: ( 1000/grassprince)
+Context: unconfined_u:object_r:user_home_t:s0
+Access: 2020-04-01 09:01:57.347572334 -0400
+Modify: 2020-04-01 09:03:04.943595109 -0400
+Change: 2020-04-01 09:03:04.943595109 -0400
+ Birth: -
+```
+
+#### 7.8 cut
+
+```
+cut 命令用于按“列”提取文本字符，格式为   cut [参数] 文本
+```
+
+- 案例演示
+
+```
+提取 etc/passwd 文件 ：分隔 的 第一列数据
+[grassprince@centos7-test ~]$ head -n 3 /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+[grassprince@centos7-test ~]$ cut -d: -f1 /etc/passwd
+root
+bin
+daemon
+adm
+lp
+sync
+shutdown
+```
+
+
+
+#### 7.9 diff
+
+```
+diff 命令用于比较多个文本文件的差异，格式为   diff [参数] 文件
+```
+
+- 案例演示
+
+```
+通过 -q / --brief 参数查看两个文件是否相同
+[grassprince@centos7-test ~]$ diff -q gitReposity/document/operate/jmeter.txt gitReposity/document/operate/ubutun.txt 
+Files gitReposity/document/operate/jmeter.txt and gitReposity/document/operate/ubutun.txt differ
+
+通过 -c 参数查看两个文件具体差异
+[grassprince@centos7-test ~]$ diff -c gitReposity/document/operate/jmeter.txt gitReposity/document/operate/ubutun.txt 
+*** gitReposity/document/operate/jmeter.txt	2020-03-28 23:44:37.292978041 -0400
+--- gitReposity/document/operate/ubutun.txt	2020-03-28 23:44:37.292978041 -0400
+***************
+*** 1,3 ****
+! jmeter
+! 安装：		https://blog.csdn.net/wust_lh/article/details/86095924
+! 使用：		https://blog.csdn.net/yaorongke/article/details/82799609
+\ No newline at end of file
+--- 1,51 ----
+! ubutun
+! 密码：123987
+```
+
+### 8. 文件目录管理命令
+
+#### 8.1 touch
+
+```
+touch 命令用于创建空白文件或设置文件的时间，格式为   touch [选项] [文件]
+```
+
+- 常用参数说明
+
+  | 参数 | 作用                      |
+  | ---- | ------------------------- |
+  | -a   | 仅修改 "读取时间" (atime) |
+  | -m   | 仅修改 "修改时间" (mtime) |
+  | -d   | 同时修改 atime 与 mtime   |
+
+- 案例演示
+
+```
+创建a.txt,  并  修改 读取和修改时间
+[grassprince@centos7-test Templates]$ touch a.txt
+[grassprince@centos7-test Templates]$ ll a.txt 
+-rw-rw-r--. 1 grassprince grassprince 0 Apr  1 09:26 a.txt
+[grassprince@centos7-test Templates]$ touch -d '2020-04-20 13:14:20' a.txt 
+[grassprince@centos7-test Templates]$ ll a.txt 
+-rw-rw-r--. 1 grassprince grassprince 0 Apr 20  2020 a.txt
+```
+
+#### 8.2 mkdir
+
+```
+mkdir 命令用于创建空白的目录，格式为   mkdir [选项] 目录
+```
+
+- 案例演示
+
+```
+-p 可递归创建文件夹，  不加 参数 直接创建
+[grassprince@centos7-test Templates]$ mkdir test
+[grassprince@centos7-test Templates]$ ll
+total 0
+-rw-rw-r--. 1 grassprince grassprince 0 Apr 20  2020 a.txt
+drwxrwxr-x. 2 grassprince grassprince 6 Apr  1 09:29 test
+[grassprince@centos7-test Templates]$ mkdir -p test/test1/test2
+[grassprince@centos7-test Templates]$ ll test/test1/test2/
+total 0
+[grassprince@centos7-test Templates]$ ll test/test1/
+total 0
+drwxrwxr-x. 2 grassprince grassprince 6 Apr  1 09:29 test2
+```
+
+#### 8.3 cp
+
+```
+cp 命令用于复制文件或目录，格式为   cp [选项] 源文件 目标文件
+```
+
+- 常用参数说明
+
+  | 参数 | 作用                                         |
+  | ---- | -------------------------------------------- |
+  | -p   | 保留原始文件的属性                           |
+  | -d   | 若对象为“链接文件”，则保留该“链接文件”的属性 |
+  | -r   | 递归持续复制（用于目录）                     |
+  | -i   | 若目标文件存在则询问是否覆盖                 |
+  | -a   | 相当于-pdr（ p、 d、 r 为上述参数            |
+
+- 案例演示
+
+```
+[grassprince@centos7-test Templates]$ ls tes/
+[grassprince@centos7-test Templates]$ cp a.txt tes/
+[grassprince@centos7-test Templates]$ ls tes/
+a.txt
+```
+
+#### 8.4 mv
+
+```
+mv 命令用于剪切文件或将文件重命名， 格式为  mv [选项] 源文件 [目标路径|目标文件名]
+```
+
+- 案例演示
+
+```
+重命名 a.txt 为 b.txt
+[grassprince@centos7-test Templates]$ ls
+a.txt  tes
+[grassprince@centos7-test Templates]$ mv a.txt b.txt
+[grassprince@centos7-test Templates]$ ls
+b.txt  tes
+```
+
+#### 8.5 rm
+
+```
+rm 命令用于删除文件或目录，格式为   rm [选项] 文件
+```
+
+- 案例演示
+
+```
+删除目录 tes，  -r 递归删除  -f 提示默认为 确定
+[grassprince@centos7-test Templates]$ ls
+b.txt  tes
+[grassprince@centos7-test Templates]$ rm -rf tes/
+[grassprince@centos7-test Templates]$ ls
+b.txt
+```
+
+#### 8.6 dd
+
+```
+dd 命令用于按照指定大小和个数的数据块来复制文件或转换文件，格式为    dd [参数]
+```
+
+- 参数说明
+
+  | 参数  | 作用                 |
+  | ----- | -------------------- |
+  | if    | 输入的文件名称       |
+  | of    | 输出的文件名称       |
+  | bs    | 设置每个“块”的大小   |
+  | count | 设置要复制“块”的个数 |
+
+- 案例演示
+
+```
+把光驱设备中的光盘制作成 iso 格式的镜像文件
+[root@linuxprobe ~]# dd if=/dev/cdrom of=RHEL-server-7.0-x86_64-LinuxProbe.Com.iso
+7311360+0 records in
+7311360+0 records out
+3743416320 bytes (3.7 GB) copied, 370.758 s, 10.1 MB/s
+```
+
+#### 8.7 file
+
+```
+file 命令用于查看文件的类型，格式为    file 文件名
+```
+
+- 案例演示
+
+```
+[grassprince@centos7-test Templates]$ file test/
+test/: directory
+[grassprince@centos7-test Templates]$ file b.txt 
+b.txt: empty
+[grassprince@centos7-test Templates]$ file /dev/sda
+/dev/sda: block special
+```
+
+### 9. 打包压缩与搜索命令
+
+
+
 ### 1. find： 在指定目录下查找文件。
 
 #### 1.1 基本命令
