@@ -1006,141 +1006,187 @@ b.txt: empty
 
 ### 9. 打包压缩与搜索命令
 
-
-
-### 1. find： 在指定目录下查找文件。
-
-#### 1.1 基本命令
+#### 9.1 tar
 
 ```
-find   path  -option  【 -print 】 【 -exec   -ok   |xargs  |grep 】 【  command  {} \; 】
+tar 命令用于对文件进行打包压缩或解压，格式为     tar [选项] [文件]
 ```
 
-#### 1.2 命令参数说明
+- 常用参数及作用
 
-1）path：要查找的目录路径。 
+  | 参数 | 作用                   |
+  | ---- | ---------------------- |
+  | -c   | 创建压缩文件           |
+  | -x   | 解开压缩文件           |
+  | -t   | 查看压缩包内有哪些文件 |
+  | -z   | 用 Gzip 压缩或解压     |
+  | -j   | 用 bzip2 压缩或解压    |
+  | -v   | 显示压缩或解压的过程   |
+  | -f   | 目标文件名             |
+  | -p   | 保留原始的权限与属性   |
+  | -P   | 使用绝对路径来压缩     |
+  | -C   | 指定解压到的目录       |
 
-- ​    ~  表示$HOME目录
-- ​     .  表示当前目录
-- ​     /  表示根目录 
-- ​    不填默认当前目录
-
-2）print：表示将结果输出到标准输出。 
-
-3）exec：对匹配的文件执行该参数所给出的shell命令。 
-      形式为command {} \;，注意{}与\;之间有空格 
-
-4）ok：与exec作用相同，
-      区别在于，在执行命令之前，都会给出提示，让用户确认是否执行 
-
-5）|xargs  与exec作用相同 ，起承接作用
-
-​      区别在于 |xargs 主要用于承接删除操作 ，而 -exec 都可用 如复制、移动、重命名等
-
-6）options ：表示查找方式
-
-#### 1.3 options常用选项
-
-| 指令选项           | 解释                                                      | 例子             |
-| ------------------ | --------------------------------------------------------- | ---------------- |
-| -name  filename    | 查找名为filename的文件                                    | find -name *.txt |
-| -perm              | 按执行权限来查找                                          | find -perm 644   |
-| -user  username    | 按文件属主来查找                                          | find -user root  |
-| -group groupname   | 按组来查找                                                | find -group root |
-| -mtime  -n +n      | 按文件更改时间来查找文件，-n指n天以内，+n指n天以前        | find -mtime -1   |
-| atime  -n +n       | 按文件访问时间来查找文件，-n指n天以内，+n指n天以前        |                  |
-| ctime  -n +n       | 按文件创建时间来查找文件，-n指n天以内，+n指n天以前        |                  |
-| -nogroup           | 查无有效属组的文件，即文件的属组在/etc/groups中不存在     |                  |
-| -nouser            | 查无有效属主的文件，即文件的属主在/etc/passwd中不存在     |                  |
-| -type  b/d/c/p/l/f | 查是块设备、目录、字符设备、管道、符号链接、普通文件      | find -type f     |
-| -size   n          | 按文件大小查找文件，c:字节,M,k,   +大于， -小于，不写等于 | find -size +13c  |
-| -mount             | 查文件时不跨越文件系统mount点                             |                  |
-| -follow            | 如果遇到符号链接文件，就跟踪链接所指的文件                |                  |
-| -prune             | 忽略某个目录                                              |                  |
-
-#### 1.4 例子
-
-1.  查找大写字母开头的txt文件 
-
-    find . -name '[A-Z]*.txt' -print 
-
-2.  查找用户有写权限或者组用户有写权限的文件或目录 
-
-    find ./ -perm /220
-    find ./ -perm /u+w,g+w
-    find ./ -perm /u=w,g=w 
-
-3.  查找2天内被更改过的普通文件 
-
-    find . -mtime -2 -type f
-
-4.  查找超过1M的文件 
-
-    find / -size +1M -type f -print 
-
-5.  查找 del.txt 并删除，删除前提示确认 
-
-    find . -name 'del.txt' -ok rm {} \;  
-
-
-
-### 2.  ps： 显示当前进程 (process) 的状态
-
-#### 2.1 基本命令
+- 案例演示
 
 ```
-ps [options] [--help]
+创建压缩文件 test2.tar.gz
+[grassprince@centos7-test Templates]$ tar -zcvf test2.tar.gz test/
+test/
+test/b.txt
+
+不解压查看压缩文件内容
+[grassprince@centos7-test Templates]$ tar tvf test2.tar.gz 
+drwxrwxr-x grassprince/grassprince 0 2020-04-03 13:35 test/
+-rw-rw-r-- grassprince/grassprince 0 2020-04-20 13:14 test/b.txt
+
+解压文件 test2.tar.gz 到 test/ 目录下
+[grassprince@centos7-test Templates]$ tar -zxvf test2.tar.gz -C test/
+test/
+test/b.txt
+tar: test/b.txt: time stamp 2020-04-20 13:14:20 is 1467083.803376688 s in the future
 ```
 
-#### 2.2  常用指令
-
-  ps  -aux     #显示出系统上的全部进程
-
-  ps  -ef        #显示出系统上的全部进程，且显示出PPID一栏
-
-   ps -ljF        #仅显示与本终端上开启的进程
-
-
-
-### 3. grep： 查找文件里符合条件的字符串 
-
-#### 3.1 基本命令 
+#### 9.2 grep
 
 ```
-grep [-abcEFGhHilLnqrsvVwxy][-A<显示列数>][-B<显示列数>][-C<显示列数>][-d<进行动作>][-e<范本样式>][-f<范本文件>][--help][范本样式][文件或目录...]
+grep 命令用于在文本中执行关键词搜索， 并显示匹配的结果， 格式为   grep [选项] [文件]
 ```
 
-#### 3.2 例子
+- 常用参数及作用
 
-1. 在当前目录中，查找后缀有 file 字样的文件中包含 test 字符串的文件，并打印出该字符串的行
+  | 参数 | 作用                                               |
+  | ---- | -------------------------------------------------- |
+  | -b   | 将可执行文件（ binary）当作文本文件（ text）来搜索 |
+  | -c   | 仅显示找到的行数                                   |
+  | -i   | 忽略大小写                                         |
+  | -n   | 显示行号                                           |
+  | -v   | 反向选择—仅列出没有“关键词”的行                    |
 
-   grep test *file
+- 案例演示
 
-2.  反向查找: 查找文件名中包含 test 的文件中不包含test 的行 
+```
+查找进程 ：  PICK 忽略大小写，显示行号
+[grassprince@centos7-test Templates]$ ps aux | grep -i -n PICK
+270:postfix   12977  0.0  0.0 102052  4084 ?        S    13:13   0:00 pickup -l -t unix -u
+291:grasspr+  13960  0.0  0.0 112716   988 pts/0    S+   13:47   0:00 grep --color=auto -i -n PICK
+```
 
-   grep -v test *test*
+#### 9.3 find
 
-3. 查找进程中包含test的进程
+```
+find 命令用于按照指定条件来查找文件，格式为   
+	find path -option 【 -print 】【 -exec  -ok   |xargs  |grep 】【 command  {} \; 】
+```
 
-   ps -aux | grep test
+- 格式说明
 
-#### * Notice
+  1）path：要查找的目录路径。 
 
-​    grep直接使用查找文件中内容，前面有ps,find等指令过滤前面指令的结果
+  - ​    ~  表示$HOME目录
+  - ​     .  表示当前目录
+  - ​     /  表示根目录 
+  - ​    不填默认当前目录
+
+  2）print：表示将结果输出到标准输出。 
+
+  3）exec：对匹配的文件执行该参数所给出的shell命令。 
+        形式为command {} \;，注意{}与\;之间有空格 
+
+  4）ok：与exec作用相同，
+        区别在于，在执行命令之前，都会给出提示，让用户确认是否执行 
+
+  5）|xargs  与exec作用相同 ，起承接作用
+
+  ​      区别在于 |xargs 主要用于承接删除操作 ，而 -exec 都可用 如复制、移动、重命名等
+
+  6）options ：表示查找方式
+
+- 常用参数及作用
+
+  | 参数               | 作用                                                         |
+  | ------------------ | ------------------------------------------------------------ |
+  | -name              | 匹配名称                                                     |
+  | -perm              | 匹配权限（ mode 为完全匹配， -mode 为包含即可）              |
+  | -user              | 匹配所有者                                                   |
+  | -group             | 匹配所有组                                                   |
+  | -mtime   -n  +n    | 匹配修改内容的时间（ -n 指 n 天以内， +n 指 n 天以前）       |
+  | -atime  -n +n      | 匹配访问文件的时间（ -n 指 n 天以内， +n 指 n 天以前）       |
+  | -ctime  -n +n      | 匹配修改文件权限的时间（ -n 指 n 天以内， +n 指 n 天以前）   |
+  | -nouser            | 匹配无所有者的文件                                           |
+  | -nogroup           | 匹配无所有组的文件                                           |
+  | -newer f1 !f2      | 匹配比文件 f1 新但比 f2 旧的文件                             |
+  | --type b/d/c/p/l/f | 匹配文件类型（后面的字幕参数依次表示块设备、目录、字符设备、管道、链接文件、文本文件） |
+  | -size              | 匹配文件的大小（ +50KB 为查找超过 50KB 的文件，而-50KB 为查找小于50KB 的文件） |
+  | -prune             | 忽略某个目录                                                 |
+
+- 案例演示
+
+```
+1. 查找大写字母开头的txt文件 
+   find . -name '[A-Z]*.txt' -print 
+
+2. 查找用户有写权限或者组用户有写权限的文件或目录 
+   find ./ -perm /220
+   find ./ -perm /u+w,g+w
+   find ./ -perm /u=w,g=w 
+
+3. 查找2天内被更改过的普通文件 
+   find . -mtime -2 -type f
+
+4. 查找超过1M的文件 
+   find / -size +1M -type f -print 
+
+5. 查找 del.txt 并删除，删除前提示确认 
+   find . -name 'del.txt' -ok rm {} \;  
+```
 
 
 
-### 4. vim：文本编辑器
+### 10. shell脚本流程控制语句
 
-#### 4.1 指令快捷键
+#### 10.1 if
 
-| 快捷键 / 命令               | 作用                                           |
-| --------------------------- | ---------------------------------------------- |
-| ZZ   /   :wq   /   :x       | 保存退出                                       |
-| ZQ  /   :q!                 | 不保存退出                                     |
-| :w filename                 | 另存为                                         |
-| :set number  /  :set  nu    | 显示行号（永久生效需要修改/etc/vim/vimrc文件） |
-| :set nonumber  /  :set nonu | 不显示行号                                     |
+```
+1. 单分支判断
+if 条件判断
+	then 执行操作
+fi
+
+2. 双分支判断
+if 条件判断
+	then 执行操作1
+else 执行操作2
+fi 
+
+3. 多分枝判断
+if 条件判断1
+	then 执行操作1
+elif 条件判断2
+	then 执行操作2
+else 执行操作3
+fi 
+```
+
+#### 10.2 for
+
+```
+for 变量名 in 取值列表
+do 执行操作
+done
+```
+
+#### 10.3 while （可用 exit 0 强行退出）
+
+```
+while 条件判断
+do 执行操作
+done
+```
+
+#### 10.4 case
+
+
 
 
 

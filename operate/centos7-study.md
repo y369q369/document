@@ -175,6 +175,22 @@ Settings  --  Devices   --  Keyboard  -- Typing  --  Switch to next input source
   git --version
   ```
 
+#### 2.5 curl
+
+- 安装
+
+  ```
+  sudo yum install curl
+  ```
+
+- 查看版本
+
+  ```
+  curl --version
+  ```
+
+  
+
 ### 3.  网络
 
 #### 3.1 ssh  开放远程连接
@@ -268,4 +284,77 @@ Settings  --  Devices   --  Keyboard  -- Typing  --  Switch to next input source
    
    ```
 
-   
+### 4. 实用操作
+
+#### 4.1 查看java实际使用目录
+
+```
+1. 查看java版本
+[root@centos7-test bin]# java -version
+openjdk version "1.8.0_242"
+OpenJDK Runtime Environment (build 1.8.0_242-b08)
+OpenJDK 64-Bit Server VM (build 25.242-b08, mixed mode)
+
+2. 查看java执行指令目录
+[root@centos7-test bin]# which java
+/bin/java
+
+3. 查看java实际目录
+[root@centos7-test bin]# ll /bin/java
+lrwxrwxrwx. 1 root root 22 Mar 28 03:30 /bin/java -> /etc/alternatives/java
+[root@centos7-test bin]# ll /etc/alternatives/java
+lrwxrwxrwx. 1 root root 73 Mar 28 03:30 /etc/alternatives/java -> /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.242.b08-0.el7_7.x86_64/jre/bin/java
+```
+
+#### 4.2 配置 java 环境
+
+```
+1.解压 jdk的包 到 /usr/local 目录下
+tar -zxvf jdk-8u221-linux-x64.tar.gz -C /usr/local
+
+2. 配置环境变量
+vim /etc/profile
+
+export JAVA_HOME=/usr/local/jdk1.8.0_221
+export PATH=$JAVA_HOME/bin:$PATH
+
+3.重新加载配置文件
+source /etc/profile
+```
+
+#### 4.3 修改环境变量
+
+- 当前终端当前用户生效，推出后就没了
+
+  ```
+  终端 直接输入
+  export TEST=1
+  ```
+
+- 当前用户生效
+
+  ```
+  1.修改当前用户 根目录 下 的 .bash_profile 或 .bashrc 文件
+  vim ~/.bash_profile
+  
+  2. 末行 添加
+  export TEST2=2
+  
+  3.重新执行刚修改的初始化文件, 或者重启生效
+  source ~/.bash_profile
+  ```
+
+- 所有用户
+
+  ```
+  1.修改 /etc/profile 文件
+  vim /etc/profile
+  
+  2. 末行 添加
+  export TEST3=3
+  
+  3.重新执行刚修改的初始化文件, 或者重启生效
+  source /etc/profile
+  ```
+
+  
