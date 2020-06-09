@@ -57,3 +57,9 @@ VPN连接属性里找到“网络”--点选“Internet协议（TCP/IPV4”--按
 | http://66.3.163.206/cqweb/                                   | cq   | yangqing | 1qaz!QAZ | xuap     | 1qaz!QAZ |
 | http://66.3.44.84:9080/mweb/prelogin.do?LoginType=R&_locale=zh_CN&BankId=9999# | 人脸 | xh4gly   | 88888888 |          |          |
 
+rtx
+
+| 软件 | account | pwd  | ip          | port |
+| ---- | ------- | ---- | ----------- | ---- |
+| rtx  | 94505   |      | 66.4.97.116 | 8000 |
+
