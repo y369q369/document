@@ -1,5 +1,4 @@
 <h1><center>centos7学习过程<center></h1>
-
 ### 1. 输入法
 
 #### 1.1 增加输入法 
@@ -90,7 +89,7 @@ Settings  --  Devices   --  Keyboard  -- Typing  --  Switch to next input source
 7.  安装docker
 
    ```
-   sudo yum install docker-ce  #由于repo中默认只开启stable仓库，故这里安装的是最新稳定版17.12.0
+   sudo yum install docker-ce docker-ce-cli containerd.io    #由于repo中默认只开启stable仓库，故这里安装的是最新稳定版17.12.0
    sudo yum install <FQPN>  # 例如：sudo yum install docker-ce-17.12.0.ce
    ```
 
@@ -109,6 +108,34 @@ Settings  --  Devices   --  Keyboard  -- Typing  --  Switch to next input source
    ```
    docker version
    ```
+   
+10. 添加阿里云镜像仓库地址
+
+   ```
+   [root@localhost ~]# tee /etc/docker/daemon.json <<-'EOF'
+   {
+     "registry-mirrors": ["https://9cpn8tt6.mirror.aliyuncs.com"]
+   }
+   EOF
+   
+   [root@localhost ~]# systemctl daemon-reload
+   [root@localhost ~]# systemctl restart docker
+   ```
+
+11. 给其他用户赋权限
+
+    ```
+    1. 创建docker组为附加组， 并添加新用户到docker组且不离开原组
+    usermod -a -G docker username
+    
+    2. 将一个用户添加到某个组
+    gpasswd -a username groupname
+    将一个用户从某个组删除
+    gpasswd -d username groupname
+    
+    3.重启docker服务
+    systemctl restart docker
+    ```
 
 - 参考网站 ： https://www.cnblogs.com/wang-yaz/p/10429899.html
 
