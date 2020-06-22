@@ -182,6 +182,51 @@ docker rename 原容器id/名 新容器名    (容器改名，先改name再改id
 
    
 
+### 6. 应用
+
+#### 6.1 mysql
+
+- 拉取镜像
+
+  ```
+  docker search mysql
+  docker pull mysql
+  ```
+
+- 创建mysql数据存放文件夹
+
+  ```
+  mkdir /opt/docker_mysql
+  chmod -R 777 /opt/docker_mysql
+  cd /opt/docker_mysql
+  ```
+
+- 启动镜像
+
+  ```
+  docker run --name mysqlserver -v $PWD/conf:/etc/mysql/conf.d -v $PWD/logs:/logs -v $PWD/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d -i -p 3306:3306 mysql:latest
+  ```
+
+- 进入mysql容器并开启远程访问权限
+
+  ```
+  docker exec -it mysqlserver bash
+  
+  mysql -uroot -p
+  
+  use mysql;
+  
+  select host,user,plugin from user;
+  # 镜像里面 root用户已经有远程连接权限在里面，所以不需要去设置，只是模式不一样才导致无法连接，把root用户的密码改成 caching_sha2_password(8.0后新模式) mysql_native_password(8.0前模式) 模式，即可远程连接
+  #ALTER USER 'root'@'%' IDENTIFIED WITH caching_sha2_password BY '123456';
+  
+  #flush privileges;
+  ```
+
+  
+
+
+
 ### * 坑
 
 - the input device is not a TTY.  If you are using mintty, try prefixing the command with 'winpty'
