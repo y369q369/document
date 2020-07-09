@@ -70,19 +70,18 @@
 3.  安装
 
    ```
-   解压：           tar -zxvf nginx-1.18.0.tar.gz -C /opt
-   切换到管理员		sudo - root
-   切换到解压目录     cd /opt/nginx
-   检测平台安装条件	./configure --prefix=/usr/local/nginx (默认安装目录为/usr/local/nginx)
+   解压：           tar -zxvf /root/download/nginx-1.18.0.tar.gz -C /root/software
+   切换到解压目录     cd /root/software/nginx-1.18.0
+   检测平台安装条件	./configure --prefix=/opt/nginx/test (默认安装目录为/usr/local/nginx)
    编译安装		  make && make install			
    ```
 
 4.  操作
 
    ```
-   启动： /usr/local/nginx/sbin/nginx 
-   停止:  /usr/local/nginx/sbin/nginx -s stop	
-   重载:  /usr/local/nginx/sbin/nginx -s reload
+   启动： /opt/nginx/test/sbin/nginx 
+   停止:  /opt/nginx/test/sbin/nginx -s stop	
+   重载:  /opt/nginx/test/sbin/nginx -s reload
    查看:  ps aux | grep nginx
    访问:	 浏览器访问localhost:80（默认端口80）
    ```
@@ -90,7 +89,7 @@
 5.  复制nginx
 
    ```
-   当前测试发现， 不同服务器的相同路径可以直接复制使用， 同一个服务器还不知道
+   当前测试发现， 不同服务器的相同路径可以直接复制使用， 同一个服务器不行
    ```
 
 #### 2.2 win10
@@ -113,7 +112,50 @@
 
 ### 3. 配置
 
-1.  简单配置
+1.  简单配置说明
+
+   ```
+   worker_processes  1;							# nginx的工作进程数（1个线程，多个进程）
+   events {
+       worker_connections  1024;					# nginx的连接数
+   }
+   http {
+       include       mime.types;
+       default_type  application/octet-stream;
+   
+       sendfile        on;
+   
+       keepalive_timeout  65;
+   
+       server {
+           listen       80;						# nginx程序的访问端口
+           
+           location /CONNECT/ {						
+               rewrite  ^/CONNECT/?(.*)$ /$1 break;		# 重写路径: 去掉/CONNECT
+               add_header backendIP $upstream_addr;		# 返回头部添加 后台程序ip
+               add_header backendCode $upstream_status;    # 返回头部添加 HTTP状态码
+               proxy_pass    http://172.18.9.33:8084;    	# 设置代理的ip及端口
+           }
+   
+           location / {
+               root   html;						# 静态html代码位置(默认nginx目录下html)
+               try_files $uri $uri/ @router;		# 解决nginx中vue项目刷新报404问题
+               index  index.html index.htm;
+           }
+           
+           location @router {						# 解决nginx中vue项目刷新报404问题
+               rewrite ^.*$ /index.html last;
+           }
+   
+           error_page   500 502 503 504  /50x.html;		# 设置错误页面
+           location = /50x.html {
+               root   html;
+           }
+   	}
+   }	
+   ```
+
+   
 
    ```
    listen       8090;
@@ -161,11 +203,96 @@
       解决方法   nginx放在含有中文字符的目录下，把中文路径去掉即可
    ```
 
-### 4. 负载均衡
+### 4. 单个nginx
 
-1.  启动三个服务（以nginx为例）
+1.  安装nginx的服务server1， 即重新编译到/opt/nginx/server1
 
    ```
+   1. /root/software/nginx-1.18.0/configure --prefix=/opt/nginx/server1 
+   2. make && make install
+   ```
+
+2.  修改配置文件(port:8085):       vim /opt/nginx/server1/conf/nginx.conf
+
+   ```
+   worker_processes  1;							
+   events {
+       worker_connections  1024;					
+   }
+   http {
+       include       mime.types;
+       default_type  application/octet-stream;
+   
+       sendfile        on;
+   
+       keepalive_timeout  65;
+   
+       server {
+           listen       8085;						# 访问端口 8085
+   
+           location / {
+               root   html;						
+               index  index.html index.htm;
+           }
+   
+           error_page   500 502 503 504  /50x.html;
+           location = /50x.html {
+               root   html;
+           }
+   	}
+   }	
+   ```
+
+3.  修改 html页面 的内容：  vim /opt/nginx/server1/html/index.html
+
+   ```
+   <!DOCTYPE html>
+   <html>
+   <head>
+   <title>Welcome to nginx!</title>
+   <style>
+       body {
+           width: 35em;
+           margin: 0 auto;
+           font-family: Tahoma, Verdana, Arial, sans-serif;
+       }
+   </style>
+   </head>
+   <body>
+   <h1> this is server1 </h1>
+   </body>
+   </html>
+   ```
+
+4. 启动服务
+
+   ```
+   1.启动    /opt/nginx/server1/sbin/nignx
+   2.访问    http://192.168.72.133:8085
+   ```
+
+   
+
+### 5. 负载均衡
+
+1.  安装四个nginx服务（三个用作web访问的nginx， 一个作为负载均衡的nginx）
+
+   | 作用域                    | ip和port            | 安装位置           |
+   | ------------------------- | ------------------- | ------------------ |
+   | web服务1    =>    server1 | 192.168.72.133:8085 | /opt/nginx/server1 |
+   | web服务2    =>    server2 | 192.168.72.133:8086 | /opt/nginx/server2 |
+   | web服务3    =>    server3 | 192.168.72.133:8087 | /opt/nginx/server3 |
+   | 负载均衡      =>    LB1   | 192.168.72.133:8081 | /opt/nginx/LB1     |
+
+2. 启动三个web服务
+
+   ```
+   1.修改端口及html
+      server1 ：   端口 - 8085;   html - this is server1
+      server2 ：   端口 - 8086;   html - this is server2
+      server3 ：   端口 - 8087;   html - this is server3
+   
+   2.启动
    server1:8085     /opt/nginx/server1/sbin/nginx
    server2:8086     /opt/nginx/server2/sbin/nginx
    server3:8087     /opt/nginx/server3/sbin/nginx
@@ -174,9 +301,7 @@
 2.  配置负载均衡的nginx（轮询）
 
    ```
-    
-   # 更改Nginx服务的默认用户，增加安全性
-   user  nginx;
+   user  nginx;										# 更改Nginx服务的默认用户，增加安全性
    worker_processes  1;
    
    events {
@@ -184,21 +309,21 @@
    }
    
    http {
-      upstream gs-server {
+      upstream gs-server {								# 设置轮询访问的ip及端口
           server 192.168.72.133:8085;
           server 192.168.72.133:8086;
           server 192.168.72.133:8087;
       }
    
        server {
-           listen       8081;
+           listen       8081;							# 设置端口为8081
            server_name  localhost;
    
            location / {
-              proxy_pass http://gs-server;
+              proxy_pass http://gs-server;				# 设置代理服务，与上方的 upstream 对应
+              add_header backendIP $upstream_addr;
+              add_header backendCode $upstream_status;
               proxy_redirect default;
-              # root   html;
-              # index  index.html index.htm;
            }
    
            error_page   500 502 503 504  /50x.html;
@@ -219,10 +344,10 @@
 4. 启动
 
    ```
-   /opt/nginx/nginx-test1/sbin/nginx
+   /opt/nginx/LB1/sbin/nginx
    ```
 
-5. 访问
+5. 访问（刷新页面可发现，显示内容变化，证明负载均衡完成）
 
    ```
    192.168.72.133:8081
@@ -230,3 +355,100 @@
 
    
 
+### 6. nginx 与 keepalived 高可用
+
+1.  安装五个nginx服务（三个用作web访问的nginx， 两个作为负载均衡的nginx）
+
+   | 作用域                    | ip和port            | 安装位置           |
+   | ------------------------- | ------------------- | ------------------ |
+   | web服务1    =>    server1 | 192.168.72.133:8085 | /opt/nginx/server1 |
+   | web服务2    =>    server2 | 192.168.72.133:8086 | /opt/nginx/server2 |
+   | web服务3    =>    server3 | 192.168.72.133:8087 | /opt/nginx/server3 |
+   | 负载均衡1    =>    LB1    | 192.168.72.133:8081 | /opt/nginx/LB1     |
+   | 负载均衡2    =>    LB2    | 192.168.72.133:8081 | /opt/nginx/LB2     |
+
+2.  启动nginx服务
+
+   ```
+   1.修改端口及html
+      	server1 ：       端口 - 8085;   html - this is server1
+      	server2 ：       端口 - 8086;   html - this is server2
+      	server3 ：       端口 - 8087;   html - this is server3
+     	nginx-test1 ：   端口 - 8081;  
+      	nginx-test2 ：   端口 - 8082
+   
+   2.启动
+   	server1     	/opt/nginx/server1/sbin/nginx
+   	server2     	/opt/nginx/server2/sbin/nginx
+   	server3     	/opt/nginx/server3/sbin/nginx
+   	LB1    			/opt/nginx/LB1/sbin/nginx
+   	LB2    			/opt/nginx/LB2/sbin/nginx
+   ```
+
+3. 安装keepalived
+
+   ```
+   1. 安装    		 yum install -y keepalived
+   
+   2. 修改配置     	vim /etc/keepalived/keepalived.conf
+   global_defs {
+      notification_email {						# 报错时邮箱接收者
+        acassen@firewall.loc
+        failover@firewall.loc
+        sysadmin@firewall.loc
+      }
+      notification_email_from Alexandre.Cassen@firewall.loc     # 报错时邮箱发送者
+      smtp_server 192.168.200.1				# 邮件服务器地址
+      smtp_connect_timeout 30					# 连接超时
+      router_id 192.168.72.150                 # ip addr 查看的ip, 也可用hostName   
+      vrrp_skip_check_adv_addr
+      vrrp_strict
+      vrrp_garp_interval 0
+      vrrp_gna_interval 0
+   }
+   
+   vrrp_instance VI_1 {
+       state BACKUP					# 服务器状态 MASTER是主服务器
+       interface ens33					# 通信端口 通过ip addr查看
+       virtual_router_id 51			# vrrp实例id keepalived集群，实例id必须一致
+       priority 100					# 权重比 主服务器的priority要比备份服务器大
+       advert_int 1					# 心跳间隔(s) 通过心跳检测，如果发送心跳没反应 就立刻接管
+       authentication {				# 服务器之间通信密码
+           auth_type PASS
+           auth_pass 1111
+       }
+       virtual_ipaddress {				# 自定义虚拟IP,
+           192.168.72.180
+       }
+   }
+   
+   
+   3. 常用命令
+   启动     systemctl start keepalived.service		 /		 service keepalived start
+   停止     systemctl stop keepalived.service      	 /		 service keepalived stop
+   重启     systemctl restart keepalived.service    	 /		 service keepalived restart
+   查看状态  systemctl status keepalived.service		/		servuce keepalived status
+   ```
+
+4.  配置 LB1 和 LB2 配置文件（给出不同部分）
+
+   | 配置                   | LB1            | LB2            |
+   | ---------------------- | -------------- | -------------- |
+   | global_defs.router_id  | 192.168.72.133 | 192.168.72.150 |
+   | vrrp_instance.state    | MASTER         | BACKUP         |
+   | vrrp_instance.priority | 150            | 100            |
+
+5.  启动keepalived
+
+   ```
+   LB1    					service keepalived start
+   LB2    					service keepalived start
+   ```
+
+6.  访问
+
+   ```
+   192.168.72.180:8081
+   ```
+
+   
