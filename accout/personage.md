@@ -35,6 +35,14 @@ Yq2020.qwe
 
 
 
+邮箱
+
+| account                  | pwd        |
+| ------------------------ | ---------- |
+| worldexploration@163.com | Yq2020.qwe |
+
+
+
 #### 统一
 
 | 平台   | account           | pwd      |
