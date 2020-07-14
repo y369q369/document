@@ -32,6 +32,8 @@ docker pull 镜像    如：   docker pull ubuntu
 ```
 winpty docker run -it ubuntu bash  (可交命令行运行)
 winpty docker run -itd ubuntu bash (后台运行)
+
+winpty docker run --name testName -itd ubuntu bash (指定容器name)
 ```
 
 - 查看容器
