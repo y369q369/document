@@ -1,5 +1,4 @@
 <h1><center>git-study</center></h1>
-
 ### 1. 下载安装
 
 #### 1.1 win10
@@ -160,15 +159,25 @@
 
 ### 3. 常用命令
 
-| 命令                             | 说明                        | 例                                       |
-| -------------------------------- | --------------------------- | ---------------------------------------- |
-| git clone 项目地址               | 下载项目                    |                                          |
-| git branch -a                    | 查看所有分支                |                                          |
-| git checkout 当前分支  -b 新分支 | 基于某分支创建新分支        | git checkout remotes/origin/master -b yq |
-| git status                       | 查看修改文件                |                                          |
-| git add 文件名                   | 添加修改的文件              |                                          |
-| git rm 文件名                    | 删除文件                    |                                          |
-| git commit -m '内容'             | 本地提交修改并添加注释      |                                          |
-| git push                         | 提交修改到github账户        |                                          |
-| git merge 指定分支               | 与dev分支合并(当前分支为主) | git merge remotes/origin/master          |
+#### 3.1 常规操作
+
+| 命令                             | 说明                 | 例                                                       |
+| -------------------------------- | -------------------- | -------------------------------------------------------- |
+| git clone 项目地址               | 下载项目             |                                                          |
+| git branch -a                    | 查看所有分支         |                                                          |
+| git checkout 当前分支  -b 新分支 | 基于某分支创建新分支 | git checkout remotes/origin/master -b yq                 |
+| git remote -v                    | 查看项目远程url      |                                                          |
+| git remote rm origin             | 删除项目远程url      |                                                          |
+| git remote add origin 远程url    | 添加项目的远程url    | git remote add origin git@github.com:cc-lcek/edu-vue.git |
+
+#### 3.2 修改文件操作
+
+| 命令                 | 说明                        | 例                              |
+| -------------------- | --------------------------- | ------------------------------- |
+| git status           | 查看修改文件                |                                 |
+| git add 文件名       | 添加修改的文件              |                                 |
+| git rm 文件名        | 删除文件                    |                                 |
+| git commit -m '内容' | 本地提交修改并添加注释      |                                 |
+| git push             | 提交修改到github账户        |                                 |
+| git merge 指定分支   | 与dev分支合并(当前分支为主) | git merge remotes/origin/master |
 
