@@ -186,6 +186,8 @@ docker rename 原容器id/名 新容器名    (容器改名，先改name再改id
 
 #### 6.1 mysql
 
+##### 6.1.1 单机
+
 - 拉取镜像
 
   ```
@@ -223,7 +225,15 @@ docker rename 原容器id/名 新容器名    (容器改名，先改name再改id
   #flush privileges;
   ```
 
-  
+##### 6.1.2 PXC集群
+
+```
+docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -e CLUSTER_NAME=PXC -e XTRABACKUP_PASSWORD=123456 -v v1:/var/lib/mysql --privileged --name=node1 --network=net1 --ip 172.20.0.2 percona/percona-xtradb-cluster
+docker run -d -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 -e CLUSTER_NAME=PXC -e XTRABACKUP_PASSWORD=123456 -e --privileged -v v2:/var/lib/mysql --name=node2 --net=net1 --ip 172.20.0.3 percona/percona-xtradb-cluster
+docker run -d -p 3308:3306 -e MYSQL_ROOT_PASSWORD=123456 -e CLUSTER_NAME=PXC -e XTRABACKUP_PASSWORD=123456 -e --privileged -v v3:/var/lib/mysql --name=node3 --net=net1 --ip 172.20.0.4 percona/percona-xtradb-cluster
+docker run -d -p 3309:3306 -e MYSQL_ROOT_PASSWORD=123456 -e CLUSTER_NAME=PXC -e XTRABACKUP_PASSWORD=123456 -e --privileged -v v4:/var/lib/mysql --name=node4 --net=net1 --ip 172.20.0.5 percona/percona-xtradb-cluster
+docker run -d -p 3310:3306 -e MYSQL_ROOT_PASSWORD=123456 -e CLUSTER_NAME=PXC -e XTRABACKUP_PASSWORD=123456 -e --privileged -v v5:/var/lib/mysql --name=node5 --net=net1 --ip 172.20.0.6 percona/percona-xtradb-cluster
+```
 
 
 
