@@ -56,19 +56,19 @@
      
   2. 配置
   
-   ```
+     ```
      1. /c/Users/yq/.ssh 目录下 新建config文件
-      touch config
+         touch config
      2. 添加内容
      
      #如GitLab
      Host gitlab.com
      HostName gitlab.com
      PreferredAuthentications publickey
-   IdentityFile c:\Users\yq\.ssh\id_rsa_gitlab
+      IdentityFile c:\Users\yq\.ssh\id_rsa_gitlab
      ```
 
-  4.  连接gitlab
+  3. 连接gitlab
   
      ```
      1. 复制 /c/Users/grassprince/.ssh 目录下 id_rsa_gitlab.pub 文件内容 到 gitlab添加ssh的页面(https://gitlab.com/profile/keys)上， 可修改title
@@ -78,7 +78,7 @@
      ECDSA key fingerprint is SHA256:HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw.
      Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
      Warning: Permanently added 'gitlab.com,172.65.251.78' (ECDSA) to the list of known hosts.
-   ```
+     ```
   
 -  github(windows)
 
@@ -110,17 +110,17 @@
      
   2. 配置
   
-   ```
+     ```
      1. 修改 /c/Users/yq/.ssh 目录下 的config文件
-   
-     #如GitHub
-     Host github.com
-     HostName github.com
-     PreferredAuthentications publickey
-     IdentityFile c:\Users\yq\.ssh\id_rsa_github
+      
+        #如GitHub
+        Host github.com
+        HostName github.com
+        PreferredAuthentications publickey
+        IdentityFile c:\Users\yq\.ssh\id_rsa_github
      ```
 
-  4.  连接github
+  3. 连接github
 
      ```
      1. 复制 /c/Users/grassprince/.ssh 目录下 id_rsa_github.pub 文件内容 到 gitlab添加ssh的页面(https://github.com/settings/ssh/new)上， 可修改title
@@ -130,7 +130,7 @@
      RSA key fingerprint is SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8.
      Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
      Warning: Permanently added 'github.com,52.74.223.119' (RSA) to the list of known hosts.
-   Hi y369q369! You've successfully authenticated, but GitHub does not provide shell access.
+      Hi y369q369! You've successfully authenticated, but GitHub does not provide shell access.
      ```
 
 -  参考网址：   https://blog.csdn.net/u010132177/article/details/104825446/ 
