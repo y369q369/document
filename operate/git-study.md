@@ -181,3 +181,15 @@
 | git push             | 提交修改到github账户        |                                 |
 | git merge 指定分支   | 与dev分支合并(当前分支为主) | git merge remotes/origin/master |
 
+#### 3.3 加快下载速度
+
+```
+原           git clone https://github.com/PanJiaChen/vue-element-admin.git
+改           git clone https://github.com.cnpmjs.org/PanJiaChen/vue-element-admin.git
+修改远程url	  git remote set-url origin https://github.com/PanJiaChen/vue-element-admin.git
+
+
+操作： https前缀  https://github.com    ->  https://github.com.cnpmjs.org
+
+```
+
