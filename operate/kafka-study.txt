@@ -2,11 +2,11 @@
 
 配置：	1.kafka根目录下新建data和kafka-logs文件夹，作为kafka快照和日志的存储文件夹
 		2.进入config目录，修改文件server.properties和zookeeper.properties（是两个\\）
-			server.properties   ：log.dirs=E:\\workSpace\\kafka_2.11-2.3.0\\kafka-logs
-			zookeeper.properties：dataDir=E:\\workSpace\\kafka_2.11-2.3.0\\data
+			server.properties   ：log.dirs=G:\\workSpace\\kafka_2.12-2.5.0\\kafka-logs
+			zookeeper.properties：dataDir=G:\\workSpace\\kafka_2.12-2.5.0\\data
 
 启动：	1.cmd进入kafka的路劲   ：  
-			cd E:\workSpace\kafka_2.11-2.3.0   ->    e:
+			cd G:\workSpace\kafka_2.12-2.5.0   ->    g:
 		2.启动kafka内置的zookeeper：  
 			.\bin\windows\zookeeper-server-start.bat  .\config\zookeeper.properties
 						出现binding to port ...表示zookeeper启动成功，不关闭页面

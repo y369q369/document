@@ -1,5 +1,4 @@
 <h2><center>快捷键</center></h2>
-
 ### 1.idea
 
 | Key mapping    | function          |
@@ -11,6 +10,7 @@
 | ctrl + f       | 当前类查找内容    |
 | ctrl + alt + f | 全局查找内容      |
 | ctrl + alt + u | 切换大小写        |
+| ctrl + alt + t | 创建try-catch     |
 
 ### 2.typera
 
