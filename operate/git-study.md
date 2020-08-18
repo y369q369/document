@@ -159,7 +159,22 @@
 | git push             | 提交修改到github账户        |                                 |
 | git merge 指定分支   | 与dev分支合并(当前分支为主) | git merge remotes/origin/master |
 
-#### 3.3 加快下载速度
+#### 3.3 还原某个文件
+
+```
+1. 查找某个文件本地的提交记录
+git log operate/mysql-study.md
+commit 244e5cc3a50e2ab2aa15b2860a081814181b5061 (HEAD -> master, origin/master)
+Author: y369q369 <1486866853@qq.com>
+Date:   Mon Aug 17 17:26:31 2020 +0800
+
+    <D5><FB><C0><ED>
+
+2. 还原
+git checkout 244e5cc3a50e2ab2aa15b2860a081814181b5061 operate/mysql-study.md
+```
+
+#### 3.4 加快下载速度
 
 ```
 原           git clone https://github.com/PanJiaChen/vue-element-admin.git
