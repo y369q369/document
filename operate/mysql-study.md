@@ -29,7 +29,7 @@
 - 删除mysql 
 
   ```
-  1. 删除所有rpm包
+  1. 删除所有rpm包 (5.7 和 8.0安装包一样， 修改版本即可)
   [root@grassprince ~]# rpm -e --nodeps mysql-community-libs-8.0.21-1.el7.x86_64
   [root@grassprince ~]# rpm -e --nodeps mysql-community-common-8.0.21-1.el7.x86_64
   [root@grassprince ~]# rpm -e --nodeps mysql-community-client-8.0.21-1.el7.x86_64
@@ -51,22 +51,26 @@
   选择：       Red Hat Enterprise Linux / Oracle Linux
                Red Hat Enterprise Linux 7 / Oracle Linux 7 (x86, 64-bit)
   下载：       页面  bundle (下方第一个)
-              命令行 wget https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-8.0.21-1.el7.x86_64.rpm-bundle.tar
+              命令行 wget https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-8.0.21-1.el7.x86_64.rpm-bundle.tar   (8.1)
+              wget https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.31-1.el7.x86_64.rpm-bundle.tar  (5.7)
   ```
   
-- 安装 mysql
+  
+  
+- 装 mysql
 
    ```
    1. 解压
       tar -xvf mysql-8.0.21-1.el7.x86_64.rpm-bundle.tar -C ./mysql-community-8
       cd mysql-community-8
    
-   2. 安装
+   2. 安装 (5.7 和 8.0安装包一样， 修改版本即可)
       rpm -ivh mysql-community-common-8.0.21-1.el7.x86_64.rpm
       rpm -ivh mysql-community-libs-8.0.21-1.el7.x86_64.rpm
       rpm -ivh mysql-community-client-8.0.21-1.el7.x86_64.rpm
       rpm -ivh mysql-community-server-8.0.21-1.el7.x86_64.rpm
    ```
+   
 - 启动 mysql
 
      ```
@@ -77,6 +81,7 @@
      
      查看版本：  mysql -V
      ```
+     
 -    设置
 
   ```
