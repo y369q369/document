@@ -135,6 +135,7 @@
 
 -  参考网址：   https://blog.csdn.net/u010132177/article/details/104825446/ 
 
+
 #### 2.2 git网站上图片无法显示
 
 - 原因
@@ -151,6 +152,15 @@
   199.232.68.133 githubusercontent.com
   ```
 
+#### 2.2 配置全局用户名和邮箱
+
+```
+用户名
+git config  --global user.name y369q369
+
+邮箱
+git config  --global user.email 1486866853@qq.com
+```
 ### 3. 常用命令
 
 #### 3.1 常规操作
