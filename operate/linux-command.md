@@ -1258,3 +1258,92 @@ chown -R   hadoop:hadoop /usr/local/hadoop-2.7.5
 | 停止防火墙         | systemctl stop firewalld.service                             |
 | 禁止防火墙开机启动 | systemctl disable firewalld.service                          |
 
+### 7. 脚本学习
+
+#### 7.1 dirname
+
+```
+dirname 命令用于打印路径中最后一个/前的内容，格式为   mkdir 路径
+```
+
+- 案例演示
+
+```
+# 打印$PATH
+[gs@centos7 ~]$ echo $PATH
+/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/home/gs/.local/bin:/home/gs/bin
+[gs@centos7 ~]$ dirname $PATH
+/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/home/gs/.local/bin:/home/gs
+[gs@centos7 ~]$
+
+#随机测试
+[gs@centos7 ~]$ dirname /home/gs/Desktop/sd
+/home/gs/Desktop
+```
+
+#### 7.2 basename
+
+```
+basename 命令用于打印路径中最后一个/后的内容，格式为   mkdir 路径
+```
+
+- 案例演示
+
+```
+# 打印$PATH
+[gs@centos7 ~]$ echo $PATH
+/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/home/gs/.local/bin:/home/gs/bin
+[gs@centos7 ~]$ basename $PATH
+bin
+
+#随机测试
+[gs@centos7 ~]$ basename /home/gs/Desktop/sd
+sd
+
+```
+
+### 7.3 BASH_SOURCE参数
+
+```
+BASH_SOURCE shell脚本中当前脚本的名称数组， 第一个参数即名称（执行时的路径）
+```
+
+- 案例演示
+
+```
+# 创建脚本 /home/gs/test/example
+
+#!/bin/bash
+
+echo ${BASH_SOURCE[0]}
+basename ${BASH_SOURCE[0]}
+dirname ${BASH_SOURCE[0]}
+
+执行脚本
+[gs@centos7 test]$ /home/gs/test/example
+/home/gs/test/example
+example
+/home/gs/test
+```
+
+#### 7.4  ${变量-值}  语法
+
+```
+${变量-值} / ${变量:-值} 检查前面的值，前面有值就不读取后面，前面没有就读取后面
+```
+
+- 案例演示
+
+```
+[gs@centos7 test]$ echo ${TMPDIR:-/TMP}
+/TMP
+[gs@centos7 test]$ echo ${PATH:-/TMP}
+/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/home/gs/.local/bin:/home/gs/bin
+[gs@centos7 test]$
+[gs@centos7 test]$ echo ${PATH-/TMP}
+/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/bin:/home/gs/.local/bin:/home/gs/bin
+[gs@centos7 test]$ echo ${TMPDIR-/TMP}
+/TMP
+
+```
+

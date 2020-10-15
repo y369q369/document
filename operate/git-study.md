@@ -135,6 +135,22 @@
 
 -  参考网址：   https://blog.csdn.net/u010132177/article/details/104825446/ 
 
+#### 2.2 git网站上图片无法显示
+
+- 原因
+
+   DNS污染 ： **网域服务器缓存污染**（DNS cache pollution），又称**域名服务器缓存投毒**（DNS cache poisoning），是指一些刻意制造或无意中制造出来的域名服务器数据包，把域名指往不正确的IP地址。一般来说，在互联网上都有可信赖的网域服务器，但为减低网络上的流量压力，一般的域名服务器都会把从上游的域名服务器获得的解析记录暂存起来，待下次有其他机器要求解析域名时，可以立即提供服务。一旦有关网域的局域域名服务器的缓存受到污染，就会把网域内的计算机导引往错误的服务器或服务器的网址。 
+
+- 解决方法
+
+  配置hosts
+
+  ```
+  #windows： c:\windows\system32\drivers\etc
+  199.232.68.133 raw.githubusercontent.com
+  199.232.68.133 githubusercontent.com
+  ```
+
 ### 3. 常用命令
 
 #### 3.1 常规操作
@@ -168,8 +184,6 @@ commit 244e5cc3a50e2ab2aa15b2860a081814181b5061 (HEAD -> master, origin/master)
 Author: y369q369 <1486866853@qq.com>
 Date:   Mon Aug 17 17:26:31 2020 +0800
 
-    <D5><FB><C0><ED>
-
 2. 还原
 git checkout 244e5cc3a50e2ab2aa15b2860a081814181b5061 operate/mysql-study.md
 ```
@@ -180,7 +194,6 @@ git checkout 244e5cc3a50e2ab2aa15b2860a081814181b5061 operate/mysql-study.md
 原           git clone https://github.com/PanJiaChen/vue-element-admin.git
 改           git clone https://github.com.cnpmjs.org/PanJiaChen/vue-element-admin.git
 修改远程url	  git remote set-url origin https://github.com/PanJiaChen/vue-element-admin.git
-
 
 操作： https前缀  https://github.com    ->  https://github.com.cnpmjs.org
 
