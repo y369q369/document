@@ -1,5 +1,4 @@
 <h1><center>kafka-study</center></h1>
-
 ### 1. 下载
 
 ```
@@ -59,6 +58,7 @@ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
 
 消费数据
 bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092  --from-beginning --topic test （从头消费）
 ```
 
 #### 2.4 配置

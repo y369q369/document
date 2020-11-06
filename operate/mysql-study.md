@@ -52,7 +52,7 @@
                Red Hat Enterprise Linux 7 / Oracle Linux 7 (x86, 64-bit)
   下载：       页面  bundle (下方第一个)
               命令行 wget https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-8.0.21-1.el7.x86_64.rpm-bundle.tar   (8.1)
-              wget https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.31-1.el7.x86_64.rpm-bundle.tar  (5.7)
+              wget https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.31-1.el7.x86_64.rpm-bundle.tar  (5.7)
   ```
   
   
