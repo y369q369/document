@@ -63,9 +63,19 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092  --from-beginnin
 
 #### 2.4 配置
 
+> server.properties
+
 ```
-server.properties
+# 监听端口，默认为主机名（设置为主机ip或0.0.0.0）
+listeners=PLAINTEXT://0.0.0.0:9092
+
+# 提供给生产者和消费者的ip,没有配置使用listeners的值（不能为0.0.0.0,只能是真实ip）
+advertised.listeners=PLAINTEXT://192.168.72.161:9092
+
+# 彻底删除topic
 delete.topic.enable=true
+
+# 允许自动创建topic：生产消费时无topic会自动创建topic
 auto.create.topics.enable=false
 ```
 

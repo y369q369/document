@@ -386,6 +386,32 @@ source /etc/profile
 
   
 
-#### 4.4 修改语言
+#### 4.4 设置sudo用户	
+
+- 修改 /etc/sudoers
+
+  ```
+  vim /etc/sudoers
+  ```
+
+- sudo用户需要密码
+
+  ```
+  ## Allow root to run any commands anywhere 
+  root    ALL=(ALL)       ALL
+  gs      ALL=(ALL)       ALL
+  ```
+
+- sudo用户不需密码
+
+  ```
+  ## Allow root to run any commands anywhere 
+  root    ALL=(ALL)       ALL
+  gs      ALL=(ALL)       NOPASSWD:ALL
+  ```
+
+  
+
+#### 4.5 修改语言
 
 - 
