@@ -1,4 +1,4 @@
-下载node.js,    https://nodejs.org/en/(windows版本下载：...LTS)
+﻿下载node.js,    https://nodejs.org/en/(windows版本下载：...LTS)
 安装后自动安装node和npm两个包，   (npm可以理解为maven仓库的前端js库)
 node -v
 npm -v
@@ -9,11 +9,15 @@ npm set cache F:\nodejs\node_cache
 npm set prefix F:\nodejs\node_global
 
 
-安装相应的包
+安装相应的包(管理员)
 npm install -g cnpm --registry=http://registry.npm.taobao.org						cnpm镜像
 cnpm install -g vue-cli																vue-cli脚手架
 cnpm install -g webpack																webpack，js打包
 cnpm install -g @vue/cli															vue的ui界面
+
+查看版本
+cnpm -v
+vue -V
 
 
 

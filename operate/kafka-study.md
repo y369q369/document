@@ -38,13 +38,30 @@
 
 ```
 创建topic: test
-bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+bin/kafka-topics.sh --zookeeper localhost:2181 --create --replication-factor 1 --partitions 1 --topic test
 
 查看topic列表
-bin/kafka-topics.sh --list --zookeeper localhost:2181
+bin/kafka-topics.sh --zookeeper localhost:2181 --list
 
 查看指定topic的详细信息
 bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic test
+
+查看所有topic的配置信息
+bin/kafka-configs.sh --zookeeper localhost:2181 --entity-type topics --describe
+查看指定topic配置信息
+bin/kafka-configs --zookeeper localhost:2181 --entity-type topics --entity-name test --describe
+
+topic修改配置(两种方式)
+一、
+bin/kafka-configs.sh --zookeeper localhost:2181 --entity-type topics --entity-name test --alter --add-config retention.ms=9223372036854775807,cleanup.policy=delete
+二、
+bin/kafka-topics.sh --zookeeper localhost:2181 --alter --topic test --config retention.ms=86400000
+
+topic删除配置（两种方式）
+一、
+bin/kafka-configs.sh --zookeeper localhost:2181 --entity-type topics --entity-name test --alter --delete-config retention.ms
+二、
+bin/kafka-topics.sh --zookeeper localhost:2181 --alter --topic test --delete-config retention.ms
 
 删除topic
 bin/kafka-topics.sh --zookeeper localhost:2181 --delete --topic test
