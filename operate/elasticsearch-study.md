@@ -103,4 +103,9 @@
   ip:9200
   ```
 
-  
+
+### 3 api
+
+官网： https://www.elastic.co/guide/en/elasticsearch/reference/7.10/cat.html
+
+获取所有index:  /_cat/indices
