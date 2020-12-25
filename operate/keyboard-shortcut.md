@@ -12,6 +12,7 @@
 | ctrl + shift+ u        | 切换大小写        |
 | ctrl + alt + u         | 生成UML图         |
 | ctrl + alt + t         | 创建try-catch     |
+| alt + 8                | 展示services      |
 
 ### 2.typera
 
