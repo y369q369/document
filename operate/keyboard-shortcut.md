@@ -1,17 +1,18 @@
 <h2><center>快捷键</center></h2>
 ### 1.idea
 
-| Key mapping     | function          |
-| --------------- | ----------------- |
-| Alt  + ↑ / ↓    | 查看上/下一个方法 |
-| ctrl + q        | 查看方法详情      |
-| ctrl + f12      | 查看所有方法      |
-| ctrl + n        | 查找类            |
-| ctrl + f        | 当前类查找内容    |
-| ctrl + shift+ f | 全局查找内容      |
-| ctrl + shift+ u | 切换大小写        |
-| ctrl + alt + u  | 生成UML图         |
-| ctrl + alt + t  | 创建try-catch     |
+| Key mapping            | function          |
+| ---------------------- | ----------------- |
+| Alt  + ↑ / ↓           | 查看上/下一个方法 |
+| ctrl + q               | 查看方法详情      |
+| ctrl + f12  /  alt +７ | 查看所有方法      |
+| ctrl + n               | 查找类            |
+| ctrl + f               | 当前类查找内容    |
+| ctrl + shift+ f        | 全局查找内容      |
+| ctrl + shift+ u        | 切换大小写        |
+| ctrl + alt + u         | 生成UML图         |
+| ctrl + alt + t         | 创建try-catch     |
+| alt + 8                | 展示services      |
 
 ### 2.typera
 

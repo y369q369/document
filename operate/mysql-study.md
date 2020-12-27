@@ -55,8 +55,6 @@
               wget https://cdn.mysql.com/archives/mysql-5.7/mysql-5.7.31-1.el7.x86_64.rpm-bundle.tar  (5.7)
   ```
   
-  
-  
 - 装 mysql
 
    ```
