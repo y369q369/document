@@ -84,6 +84,73 @@
   | 查看用户详情         | id hadoop                         |
   | 用户添加到组         | usermod -G #{用户组} #{用户}      |
 
+### 1.4 SSH 免密登录
+
+- 示例：master节点免密登录slave1节点（如果需要双向，重复多次操作）
+
+  > master节点操作
+
+  ```
+  # 生成rsa凭证（遇到提示信息，一直按回车就可以）
+  [root@master zookeeper]# ssh-keygen -t rsa
+  Generating public/private rsa key pair.
+  Enter file in which to save the key (/root/.ssh/id_rsa): 
+  Enter passphrase (empty for no passphrase): 
+  Enter same passphrase again: 
+  Your identification has been saved in /root/.ssh/id_rsa.
+  Your public key has been saved in /root/.ssh/id_rsa.pub.
+  The key fingerprint is:
+  SHA256:1XX5Tkpx0KrNOpxQ39vy5FS/UVu/OOz+rv7ppxdGRq0 root@master
+  The key's randomart image is:
+  +---[RSA 2048]----+
+  |              oo+|
+  |           . ..++|
+  |          . . .=.|
+  |         .  . Eoo|
+  |        S  . *o=+|
+  |          . . =oX|
+  |           o.o.oO|
+  |            =oo=O|
+  |            +BO&+|
+  +----[SHA256]-----+
+  
+  # 复制 id_rsa.pub 公匙 到slave1节点
+  [root@master .ssh]# scp /root/.ssh/id_rsa.pub root@slave1:/root
+  ```
+
+  > slave1节点操作
+
+  ```
+  # 生成rsa凭证（遇到提示信息，一直按回车就可以）
+  [root@slave1 .ssh]# ssh-keygen -t rsa
+  Generating public/private rsa key pair.
+  Enter file in which to save the key (/root/.ssh/id_rsa): 
+  Enter passphrase (empty for no passphrase): 
+  Enter same passphrase again: 
+  Your identification has been saved in /root/.ssh/id_rsa.
+  Your public key has been saved in /root/.ssh/id_rsa.pub.
+  The key fingerprint is:
+  SHA256:DpuJREW12723J2InWO+Wvq7qk8vmYupczzvyoB1bTHE root@slave1
+  The key's randomart image is:
+  +---[RSA 2048]----+
+  |     .o..        |
+  |     .   .       |
+  |    .   . . E    |
+  |   .     o +     |
+  |    . . S o .    |
+  |   . . * o  ..   |
+  |    . + = o+.... |
+  |     . ++O* +.*..|
+  |     .=ooB@B.X*+ |
+  +----[SHA256]-----+
+  
+  # 复制master的公匙id_rsa.pub到 authorized_keys 文件中
+  [root@slave1 .ssh]# cat /root/id_rsa.pub >> /root/.ssh/authorized_keys
+  
+  # 修改 authorized_keys 权限为600（非root用户不修改不能免密登录）
+  [root@slave1 .ssh]# chmod 600 /root/.ssh/authorized_keys
+  ```
+
 ## 2. zookeeper
 
 ### 2.1 依赖
@@ -100,14 +167,14 @@
 
 ### 2.3 部署
 
-- 文件位置：	/root/software/zookeeper
+- 文件位置：	/opt/.3.0/zookeeper
 
 - 版本：3.6.2
 
 - 解压
 
   ```
-  tar -zxf apache-zookeeper-3.6.2-bin.tar.gz -C /root/software/zookeeper
+  tar -zxf apache-zookeeper-3.6.2-bin.tar.gz -C /opt/zookeeper
   ```
 
 - 设置环境变量
@@ -116,7 +183,7 @@
 
   ```
   #ZK_HOME
-  export ZOOKEEPER_HOME=/root/software/zookeeper/apache-zookeeper-3.6.2-bin
+  export ZOOKEEPER_HOME=/opt/zookeeper/apache-zookeeper-3.6.2-bin
   export PATH=$PATH:$ZOOKEEPER_HOME/bin
   ```
 
@@ -134,7 +201,7 @@
 
   ```
   # 修改数据文件位置
-  dataDir=/root/logs/zookeeper
+  dataDir=/opt/zookeeper/apache-zookeeper-3.6.2-bin/data
   ```
 
 #### 2.3.2 集群
@@ -147,7 +214,7 @@
 
   ***将原先 zoo_sample.cfg 配置文件 复制一份并改名为  zoo.cfg***
 
-  > [root@master conf]# cd /root/software/zookeeper/apache-zookeeper-3.6.2-bin/conf
+  > [root@master conf]# cd /opt/zookeeper/apache-zookeeper-3.6.2-bin/conf
   >
   > [root@master conf]# cp zoo_sample.cfg zoo.cfg
   >
@@ -155,7 +222,7 @@
 
   ```
   # 修改数据文件位置
-  dataDir=/root/software/zookeeper/apache-zookeeper-3.6.2-bin/data
+  dataDir=/opt/zookeeper/apache-zookeeper-3.6.2-bin/data
   
   #最后一行新增(当前节点server的ip设置为0.0.0.0， 如master节点)
   server.1=0.0.0.0:2888:3888
@@ -165,9 +232,9 @@
 
   ***每个节点基于 zoo.cfg 中 dataDir 的文件位置 新增 myid文件， 且将server的值输入myid***（如master节点的server.1）
 
-  > [root@master conf]# mkdir -p /root/software/zookeeper/apache-zookeeper-3.6.2-bin/data
+  > [root@master conf]# mkdir -p /opt/zookeeper/apache-zookeeper-3.6.2-bin/data
   >
-  > [root@master conf]# echo 1 > /root/software/zookeeper/apache-zookeeper-3.6.2-bin/data/myid
+  > [root@master conf]# echo 1 > /opt/zookeeper/apache-zookeeper-3.6.2-bin/data/myid
 
 - 端口开放
 
@@ -234,27 +301,28 @@
 
 ### 3.3 部署
 
-- 文件位置：	/root/software/hadoop
+- 文件位置：	/opt/hadoop
 
 - 版本：3.3.0
 
 - 解压
 
   ```
-  tar -zxf hadoop-3.3.0.tar.gz -C /root/software/hadoop
+  tar -zxf hadoop-3.3.0.tar.gz -C /opt/hadoop
   ```
 
 - 设置环境变量
 
-  > [root@master apache-zookeeper-3.6.2-bin]# vim /etc/profile
+  > [root@master hadoop-3.3.0]# vim /etc/profile
 
   ```
-  #ZK_HOME
-  export ZOOKEEPER_HOME=/root/software/zookeeper/apache-zookeeper-3.6.2-bin
-  export PATH=$PATH:$ZOOKEEPER_HOME/bin
+  #HADOOP_HOME
+  export HADOOP_HOME=/opt/hadoop/hadoop-3.3.0
+  export PATH=$PATH:$HADOOP_HOME/bin
+  export PATH=$PATH:$HADOOP_HOME/sbin
   ```
 
-  > [root@master apache-zookeeper-3.6.2-bin]# source /etc/profile
+  > [root@master hadoop-3.3.0]# source /etc/profile
 
 - 创建hadoop用户及hadoop用户组
 
@@ -278,14 +346,195 @@
   hadoop  ALL=(ALL)       NOPASSWD:ALL
   ```
 
+- 节点免密登录
+
+  > hadoop用户登录本节点
+
+  ```
+  # 查看用户家目录下有没有.ssh目录(有./ssh目录则表示生成过rsa凭证)
+  [hadoop@master ~]$ ll -a
+  total 22
+  drwx------. 5 hadoop hadoop  158 Dec 28 01:23 .
+  drwxr-xr-x. 5 root   root     43 Dec 27 19:46 ..
+  -rw-------. 1 hadoop hadoop 1566 Dec 28 01:27 .bash_history
+  -rw-r--r--. 1 hadoop hadoop   18 Apr 10  2018 .bash_logout
+  -rw-r--r--. 1 hadoop hadoop  193 Apr 10  2018 .bash_profile
+  -rw-r--r--. 1 hadoop hadoop  231 Apr 10  2018 .bashrc
+  drwxrwxr-x. 3 hadoop hadoop   18 Dec 27 20:33 .cache
+  drwxrwxr-x. 3 hadoop hadoop   18 Dec 27 20:33 .config
+  -rw-------. 1 hadoop hadoop  863 Dec 28 01:23 .viminfo
   
+  # 生成rsa凭证
+  [hadoop@master ~]$ ssh-keygen -t rsa
+  
+  # 复制.ssh目录下的 id_rsa.pub 内容 到 authorized_keys 中
+  [hadoop@master ~]$ cat .ssh/id_rsa.pub >> .ssh/authorized_keys
+  
+  # 修改authorized_keys权限
+  [hadoop@master ~]$ chmod 600 .ssh/authorized_keys
+  ```
 
-#### 3.3.1 单机
+  > master节点hadoop用户 免密登录 slave1节点hadoop用户 
 
-- 
+  ```
+  # 复制master节点 id_rsa.pub 到 slave1节点
+  [hadoop@master ~]$ scp .ssh/authorized_keys hadoop@master:/home/hadoop
+  
+  # 复制.ssh目录下的 id_rsa.pub 内容 到 authorized_keys 中
+  [hadoop@slave1 ~]$ cat .ssh/id_rsa.pub >> .ssh/authorized_keys
+  
+  # 修改authorized_keys权限
+  [hadoop@slave1 ~]$ chmod 600 .ssh/authorized_keys
+  ```
 
-- 非hadoop用户启动
+  > 操作建议： 可以先将所有节点的公匙放到 master节点的.ssh/authorized_keys中，直接复制master节点的 .ssh/authorized_keys 给其他节点
 
-  https://blog.csdn.net/lglglgl/article/details/80553828
+#### 3.3.1 伪分布式
 
-- 
+- 参考： https://www.cnblogs.com/thousfeet/p/8618696.html
+
+- 配置文件
+
+  ```
+  # 切换到配置文件目录
+  cd /opt/hadoop/hadoop-3.3.0/etc/hadoop/
+  ```
+
+  > **hadoop-env.sh**
+
+  ```
+  # 修改JAVA_HOME
+  export JAVA_HOME=/usr/java/jdk1.8.0_221
+  ```
+
+  > **core-site.xml**
+
+  ```
+  # fs.defaultFS ： 分布式集群中主节点的地址 : 指定端口号
+  # hadoop.tmp.dir： 指定hadoop进程运行中产生的数据存放的工作目录，NameNode、DataNode等就在本地工作目录下建子目录存放数据。但事实上在生产系统里，NameNode、DataNode等进程都应单独配置目录，而且配置的应该是磁盘挂载点，以方便挂载更多的磁盘扩展容量
+  
+  <configuration>
+          <property>
+                  <name>fs.defaultFS</name>
+                  <value>hdfs://master:9000</value>
+          </property>
+          <property>
+                  <name>hadoop.tmp.dir</name>
+                  <value>/opt/hadoop/hadoop-3.3.0/data</value>
+          </property>
+  </configuration>
+  ```
+
+  > **hdfs-site.xml**
+
+  ```
+  # dfs.replication： 配置hdfs的副本数。value一般指定3，但因为搭建的是伪分布式就只有一台机器，所以只能写1
+  
+  <configuration>
+          <property>
+                  <name>dfs.replication</name>
+                  <value>1</value>
+          </property>
+  </configuration>
+  ```
+
+  >  **mapred-site.xml** 
+
+  ```
+  # mapreduce.framework.name： 指定MapReduce程序应该放在哪个资源调度集群上运行。若不指定为yarn，那么MapReduce程序就只会在本地运行而非在整个集群中运行。
+  
+  <configuration>
+          <property>
+                  <name>mapreduce.framework.name</name>
+                  <value>yarn</value>
+          </property>
+  </configuration>
+  ```
+
+  > **yarn-site.xml**
+
+  ```
+  # yarn.resourcemanager.hostname： 指定yarn集群中的老大
+  # yarn.nodemanager.aux-services： 配置yarn集群中的重节点，指定map产生的中间结果传递给reduce采用的机制是shuffle
+  
+  <configuration>
+  
+  <!-- Site specific YARN configuration properties -->
+  
+          <property>
+                  <name>yarn.resourcemanager.hostname</name>
+                  <value>master</value>
+          </property>
+          <property>
+                  <name>yarn.nodemanager.aux-services</name>
+                  <value>mapreduce_shuffle</value>
+          </property>
+  
+  </configuration>
+  ```
+
+#### 3.3.2 全分布式
+
+- 参考：https://blog.csdn.net/l1682686/article/details/107814620
+- 配置
+
+
+
+
+
+
+
+
+
+
+
+### 3.4 启动及访问
+
+- 建议 hadoop 用户使用服务命令启动
+
+- 当使用root用户操作时，报错如下
+
+  ```
+  [root@master sbin]# ./start-dfs.sh
+  Starting namenodes on [master]
+  ERROR: Attempting to operate on hdfs namenode as root
+  ERROR: but there is no HDFS_NAMENODE_USER defined. Aborting operation.
+  Starting datanodes
+  ERROR: Attempting to operate on hdfs datanode as root
+  ERROR: but there is no HDFS_DATANODE_USER defined. Aborting operation.
+  Starting secondary namenodes [slave1]
+  ERROR: Attempting to operate on hdfs secondarynamenode as root
+  ERROR: but there is no HDFS_SECONDARYNAMENODE_USER defined. Aborting operation.
+  ```
+
+  解决方案参考： https://blog.csdn.net/lglglgl/article/details/80553828
+
+- 访问：http://192.168.72.133:9870
+
+### 3.5 服务命令
+
+| 说明             | 命令                        |
+| ---------------- | --------------------------- |
+| 初始化（格式化） | bin/hadoop namenode -format |
+| 启动hdfs         | sbin/start-dfs.sh           |
+| 启动yarn         | sbin/start-yarn.sh          |
+
+### 3.6 hdfs命令行操作
+
+> 命令地址： /opt/hadoop/hadoop-3.3.0/bin/hadoop
+
+| 说明                         | 命令                                      |
+| ---------------------------- | ----------------------------------------- |
+| 查询目录                     | hadoop fs -ls /                           |
+| 创建目录                     | hadoop fs -mkdir /test                    |
+| 上传本地文件到hdfs           | hadoop fs -put ./test.txt /test           |
+|                              | hadoop fs -copyFromLocal ./test.txt /test |
+| hdfs拉文件到本地             | hadoop fs -get /test/test.txt             |
+|                              | hadoop fs -getToLocal /test/test.txt      |
+| 复制文件                     | hadoop fs -cp /test/test.txt /test1       |
+| 删除文件                     | hadoop fs -rm /test1/test.txt             |
+| 移动文件                     | hadoop fs -mv /test/test.txt /test1       |
+| 删除文件夹                   | hadoop fs -rm -r /test1                   |
+| 查阅帮助，该命令为查看ls命令 | hadoop fs -help ls                        |
+| 查看文件内容                 | hadoop fs -cat README.txt                 |
+
