@@ -301,6 +301,8 @@
 
 ### 3.3 部署
 
+#### 3.3.0 前置工作
+
 - 文件位置：	/opt/hadoop
 
 - 版本：3.3.0
@@ -389,6 +391,24 @@
 
   > 操作建议： 可以先将所有节点的公匙放到 master节点的.ssh/authorized_keys中，直接复制master节点的 .ssh/authorized_keys 给其他节点
 
+- 开放端口对外访问
+
+  ```
+  [root@slave2 ~]# firewall-cmd --list-ports
+  
+  [root@slave2 ~]# firewall-cmd --zone=public --add-port=3888/tcp --add-port=2888/tcp--add-port=2181/tcp --add-port=9870/tcp --add-port=9868/tcp --add-port=8485/tcp --add-port=8020/tcp --permanent
+  success
+  
+  [root@slave2 ~]# firewall-cmd --reload
+  success
+  
+  [root@slave2 ~]# firewall-cmd --list-ports
+  3888/tcp 2888/tcp 2181/tcp 9870/tcp 9868/tcp 8485/tcp 8020/tcp
+  
+  ```
+
+  
+
 #### 3.3.1 伪分布式
 
 - 参考： https://www.cnblogs.com/thousfeet/p/8618696.html
@@ -476,11 +496,178 @@
 #### 3.3.2 全分布式
 
 - 参考：https://blog.csdn.net/l1682686/article/details/107814620
-- 配置
 
+- 节点分配
 
+  |      | master                             | slave1                                       | slave2         |
+  | ---- | ---------------------------------- | -------------------------------------------- | -------------- |
+  | HDFS | NameNode（NN）<br />DataNode（DN） | Secondary NameNode（SN）<br />DataNode（DN） | DataNode（DN） |
+  | YARN | ResourceManager <br />NodeManager  | NodeManager                                  | NodeManager    |
 
+- 配置文件
 
+  ```
+  # 切换到配置文件目录
+  cd /opt/hadoop/hadoop-3.3.0/etc/hadoop/
+  ```
+
+  > **hadoop-env.sh**
+
+  ```
+  # 修改JAVA_HOME
+  export JAVA_HOME=/usr/java/jdk1.8.0_221
+  ```
+
+  > **core-site.xml**
+
+  ```
+  # fs.defaultFS ： 分布式集群中namenode节点的地址 : 指定端口号
+  # hadoop.tmp.dir： 指定hadoop进程运行中产生的数据存放的工作目录，NameNode、DataNode等就在本地工作目录下建子目录存放数据。但事实上在生产系统里，NameNode、DataNode等进程都应单独配置目录，而且配置的应该是磁盘挂载点，以方便挂载更多的磁盘扩展容量
+  
+  <configuration>
+          <!-- 指定NameNode的地址 -->
+          <property>
+                  <name>fs.defaultFS</name>
+                  <value>hdfs://master:9000</value>
+          </property>
+          <property>
+                  <name>hadoop.tmp.dir</name>
+                  <value>/opt/hadoop/hadoop-3.3.0/data</value>
+          </property>
+  </configuration>
+  ```
+
+  > **hdfs-site.xml**
+
+  ```
+  <configuration>
+          <!-- namenode数据的存储目录 -->
+          <property>
+                  <name>dfs.namenode.name.dir</name>
+                  <value>file://${hadoop.tmp.dir}/namenode</value>
+          </property>
+   
+          <!-- Secondary namenode数据的存储目录 -->
+          <property>
+                  <name>dfs.namenode.checkpoint.dir</name>
+                  <value>file://${hadoop.tmp.dir}/secondaryNamenode</value>
+          </property>
+  
+          <!-- datanode数据的存储目录 -->
+          <property>
+                  <name>dfs.datanode.data.dir</name>
+                  <value>file://${hadoop.tmp.dir}/datanode</value>
+          </property>
+          
+          <!-- namenode节点web访问地址 -->
+          <property>
+                  <name>dfs.namenode.http-address</name>
+                  <value>master:9870</value>
+          </property>
+  
+          <!-- secondary namenode节点的web访问地址 -->
+          <property>
+                  <name>dfs.namenode.secondary.http-address</name>
+                  <value>slave1:9868</value>
+          </property>
+  </configuration>
+  ```
+
+  > workers
+
+  ```
+  # 配DataNode节点
+  master
+  slave1
+  slave2
+  ```
+
+  > mapred-site.xml
+
+  ```
+  # mapreduce.framework.name： 指定MapReduce程序应该放在哪个资源调度集群上运行。若不指定为yarn，那么MapReduce程序就只会在本地运行而非在整个集群中运行。
+  
+  <configuration>
+          <!-- 指定MR运行在YARN上 -->
+  		<property>
+                  <name>mapreduce.framework.name</name>
+                  <value>yarn</value>
+          </property>
+  </configuration>
+  ```
+
+  >  yarn-site.xml
+
+  ```
+  # yarn.resourcemanager.hostname： 指定yarn集群中的主节点
+  # yarn.nodemanager.aux-services： 配置yarn集群中的重节点，指定map产生的中间结果传递给reduce采用的机制是shuffle
+  
+  <configuration>
+  
+  <!-- Site specific YARN configuration properties -->
+  
+          <property>
+                  <name>yarn.resourcemanager.hostname</name>
+                  <value>master</value>
+          </property>
+          <property>
+                  <name>yarn.nodemanager.aux-services</name>
+                  <value>mapreduce_shuffle</value>
+          </property>
+  
+  </configuration>
+  ```
+
+- 复制hadoop文件夹到另外两个节点
+
+  ```
+  # 主节点 到 slave1
+  scp -r /opt/hadoop/ slave1:/opt
+  
+  # 主节点 到 slave2
+  scp -r /opt/hadoop/ slave2:/opt
+  ```
+
+- 启动
+
+  ```
+  # 第一次安装hadoop，需要格式化
+  [hadoop@master hadoop-3.3.0]$ bin/hdfs namenode -format
+  
+  # 删除历史数据及日志
+  [hadoop@master hadoop-3.3.0]$ rm -rf logs data
+  
+  # 创建数据目录
+  [hadoop@master hadoop-3.3.0]$ mkdir -p data/namenode
+  [hadoop@master hadoop-3.3.0]$ mkdir -p data/secondaryNamenode
+  [hadoop@master hadoop-3.3.0]$ mkdir -p data/datanode
+  
+  # master节点启动 namenode 和 datanode
+  [hadoop@master hadoop-3.3.0]$ hdfs --daemon start namenode
+  WARNING: /opt/hadoop/hadoop-3.3.0/logs does not exist. Creating.
+  [hadoop@master hadoop-3.3.0]$ hdfs --daemon start datanode
+  [hadoop@master hadoop-3.3.0]$ jps
+  3808 DataNode
+  3868 Jps
+  3695 NameNode
+  
+  # slave1 启动 Secondary NameNode 和 datanode
+  [hadoop@slave1 hadoop-3.3.0]$ hdfs --daemon start secondarynamenode
+  [hadoop@slave1 hadoop-3.3.0]$ hdfs --daemon start datanode
+  [hadoop@slave1 hadoop-3.3.0]$ jps
+  2450 SecondaryNameNode
+  2518 DataNode
+  2566 Jps
+  
+  # slave2 启动 datanode
+  [hadoop@slave2 hadoop-3.3.0]$ hdfs --daemon start datanode
+  WARNING: /opt/hadoop/hadoop-3.3.0/logs does not exist. Creating.
+  [hadoop@slave2 hadoop-3.3.0]$ jps
+  2154 DataNode
+  2202 Jps
+  ```
+
+  
 
 
 
@@ -494,7 +681,6 @@
 
 - 当使用root用户操作时，报错如下
 
-  ```
   [root@master sbin]# ./start-dfs.sh
   Starting namenodes on [master]
   ERROR: Attempting to operate on hdfs namenode as root
@@ -505,8 +691,7 @@
   Starting secondary namenodes [slave1]
   ERROR: Attempting to operate on hdfs secondarynamenode as root
   ERROR: but there is no HDFS_SECONDARYNAMENODE_USER defined. Aborting operation.
-  ```
-
+  
   解决方案参考： https://blog.csdn.net/lglglgl/article/details/80553828
 
 - 访问：http://192.168.72.133:9870
@@ -517,6 +702,7 @@
 | ---------------- | --------------------------- |
 | 初始化（格式化） | bin/hadoop namenode -format |
 | 启动hdfs         | sbin/start-dfs.sh           |
+| 停止hdfs         | sbin/stop-dfs.sh            |
 | 启动yarn         | sbin/start-yarn.sh          |
 
 ### 3.6 hdfs命令行操作
