@@ -534,7 +534,7 @@ success
 
 #### 3.3.2 全分布式
 
-- 参考：https://blog.csdn.net/l1682686/article/details/107814620
+- 参考：https://blog.csdn.net/VanasWang/article/details/105451198
 
 - 节点分配
 
@@ -756,6 +756,46 @@ success
   ```
 
 #### 3.3.3 HA
+
+- 参考：https://blog.csdn.net/l1682686/article/details/107997323
+
+- 节点分配
+
+  |                 | master | slave1 | slave2 |
+  | --------------- | ------ | ------ | ------ |
+  | NameNode        | yes    | yes    |        |
+  | DataNode        | yes    | yes    | yes    |
+  | JournalNode     | yes    | yes    | yes    |
+  | NodeManager     |        | yes    | yes    |
+  | ResourceManager |        | yes    | yes    |
+  | Zookeeper       | yes    | yes    | yes    |
+  | ZKFC            | yes    | yes    | yes    |
+
+- 配置文件
+
+  ```
+  # 切换到配置文件目录
+  cd /opt/hadoop/hadoop-3.3.0/etc/hadoop/
+  ```
+
+  > **hadoop-env.sh**
+
+  ```
+  # 修改JAVA_HOME
+  export JAVA_HOME=/usr/java/jdk1.8.0_221
+  ```
+
+  > **core-site.xml**
+
+  ```
+  
+  ```
+
+  
+
+
+
+
 
 ### 3.4 启动及访问
 
