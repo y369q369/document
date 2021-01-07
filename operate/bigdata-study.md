@@ -391,23 +391,36 @@
 
   > 操作建议： 可以先将所有节点的公匙放到 master节点的.ssh/authorized_keys中，直接复制master节点的 .ssh/authorized_keys 给其他节点
 
-- 开放端口对外访问
+- 对外访问端口
 
-  ```
-  [root@slave2 ~]# firewall-cmd --list-ports
-  
-  [root@slave2 ~]# firewall-cmd --zone=public --add-port=3888/tcp --add-port=2888/tcp--add-port=2181/tcp --add-port=9870/tcp --add-port=9868/tcp --add-port=8485/tcp --add-port=8020/tcp --permanent
-  success
-  
-  [root@slave2 ~]# firewall-cmd --reload
-  success
-  
-  [root@slave2 ~]# firewall-cmd --list-ports
-  3888/tcp 2888/tcp 2181/tcp 9870/tcp 9868/tcp 8485/tcp 8020/tcp
-  
-  ```
+| service      | name                                 | 2.x端口 | 3.x端口 | desc                                                         |
+| ------------ | ------------------------------------ | ------- | ------- | ------------------------------------------------------------ |
+| hdfs         | fs.default.name                      | 9000    | 9000    | hdfs默认端口                                                 |
+| Namenode     | dfs.namenode.https-address           | 50470   | 9871    | The namenode secure http server address and port.            |
+|              | dfs.namenode.http-address            | 50070   | 9870    | The address and the base port where the dfs namenode web ui will listen on. |
+|              | fs.defaultFS                         | 8020    | 9820    | 指定HDFS运行时nameNode地址                                   |
+| Secondary NN | dfs.namenode.secondary.https-address | 50091   | 9869    | The secondary namenode HTTPS server address and port         |
+|              | dfs.namenode.secondary.http-address  | 50090   | 9868    | The secondary namenode HTTPS server address and port         |
+| Datanode     | dfs.datanode.ipc.address             | 50020   | 9867    | The datanode ipc server address and port.                    |
+|              | dfs.datanode.address                 | 50010   | 9866    | The datanode server address and port for data transfer.      |
+|              | dfs.datanode.https.address           | 50475   | 9865    | The datanode secure http server address and port             |
+|              | dfs.datanode.http.address            | 50075   | 9864    | The datanode http server address and por                     |
+| Yarn         | yarn.resourcemanager.webapp.address  | 8088    | 8088    | http服务端口                                                 |
 
-  
+> 操作
+
+```
+[root@slave2 ~]# firewall-cmd --list-ports
+
+[root@slave2 ~]# firewall-cmd --zone=public --add-port=9871/tcp --add-port=9870/tcp--add-port=9820/tcp --add-port=9869/tcp --add-port=9868/tcp --add-port=9867/tcp --add-port=9866/tcp --add-port=9865/tcp --add-port=9864/tcp --add-port=8088/tcp --add-port=9000/tcp --permanent
+success
+
+[root@slave2 ~]# firewall-cmd --reload
+success
+
+[root@slave2 ~]# firewall-cmd --list-ports
+3888/tcp 2888/tcp 2181/tcp 9871/tcp 9870/tcp 9869/tcp 9868/tcp 9867/tcp 9866/tcp 9865/tcp 9864/tcp 8088/tcp 9000/tcp
+```
 
 #### 3.3.1 伪分布式
 
@@ -493,6 +506,32 @@
   </configuration>
   ```
 
+- 启动
+
+  ```
+  # 第一次安装hadoop，需要格式化
+  [hadoop@master hadoop-3.3.0]$ bin/hdfs namenode -format
+  
+  # 启动hdfs
+  [hadoop@master hadoop]$ start-dfs.sh 
+  Starting namenodes on [master]
+  Starting datanodes
+  Starting secondary namenodes [master]
+  
+  # 查看进程
+  [hadoop@master hadoop]$ jps
+  2034 SecondaryNameNode
+  1817 DataNode
+  1707 NameNode
+  2159 Jps
+  
+  # 停止hdfs
+  [hadoop@master hadoop]$ stop-dfs.sh 
+  Stopping namenodes on [master]
+  Stopping datanodes
+  Stopping secondary namenodes [master]
+  ```
+
 #### 3.3.2 全分布式
 
 - 参考：https://blog.csdn.net/l1682686/article/details/107814620
@@ -530,6 +569,8 @@
                   <name>fs.defaultFS</name>
                   <value>hdfs://master:9000</value>
           </property>
+          
+          <!-- 指定hadoop的数据存储地址 -->
           <property>
                   <name>hadoop.tmp.dir</name>
                   <value>/opt/hadoop/hadoop-3.3.0/data</value>
@@ -541,6 +582,12 @@
 
   ```
   <configuration>
+  		<!-- datanode副本数，值 <= datanode节点数量 -->
+  		<!-- <property>
+                  <name>dfs.replication</name>
+                  <value>3</value>
+          </property> -->
+  
           <!-- namenode数据的存储目录 -->
           <property>
                   <name>dfs.namenode.name.dir</name>
@@ -573,7 +620,7 @@
   </configuration>
   ```
 
-  > workers
+  > workers （配置后可start-dfs.sh 一键启动）
 
   ```
   # 配DataNode节点
@@ -630,6 +677,8 @@
 
 - 启动
 
+  > 准备工作
+  
   ```
   # 第一次安装hadoop，需要格式化
   [hadoop@master hadoop-3.3.0]$ bin/hdfs namenode -format
@@ -641,7 +690,11 @@
   [hadoop@master hadoop-3.3.0]$ mkdir -p data/namenode
   [hadoop@master hadoop-3.3.0]$ mkdir -p data/secondaryNamenode
   [hadoop@master hadoop-3.3.0]$ mkdir -p data/datanode
+  ```
   
+  > 单节点启停
+  
+  ```
   # master节点启动 namenode 和 datanode
   [hadoop@master hadoop-3.3.0]$ hdfs --daemon start namenode
   WARNING: /opt/hadoop/hadoop-3.3.0/logs does not exist. Creating.
@@ -660,20 +713,49 @@
   2566 Jps
   
   # slave2 启动 datanode
-  [hadoop@slave2 hadoop-3.3.0]$ hdfs --daemon start datanode
+[hadoop@slave2 hadoop-3.3.0]$ hdfs --daemon start datanode
   WARNING: /opt/hadoop/hadoop-3.3.0/logs does not exist. Creating.
   [hadoop@slave2 hadoop-3.3.0]$ jps
   2154 DataNode
   2202 Jps
+  
+  # 停止
+  [hadoop@master hadoop-3.3.0]$ hdfs --daemon stop namenode
+  [hadoop@master hadoop-3.3.0]$ hdfs --daemon stop datanode
+  [hadoop@slave1 hadoop-3.3.0]$ hdfs --daemon stop secondarynamenode
+  [hadoop@slave1 hadoop-3.3.0]$ hdfs --daemon stop datanode
+  [hadoop@slave2 hadoop-3.3.0]$ hdfs --daemon stop datanode
+  ```
+  
+  > 集群操作
+  
+  ```
+  # 启动hdfs
+  [hadoop@master hadoop]$ start-dfs.sh 
+  Starting namenodes on [master]
+  Starting datanodes
+  Starting secondary namenodes [slave1]
+  
+  # 停止hdfs
+  [hadoop@master ~]$ stop-dfs.sh 
+  Stopping namenodes on [master]
+  Stopping datanodes
+  Stopping secondary namenodes [slave1]
+  
+  # 启动yarn
+  [hadoop@master hadoop]$ start-yarn.sh
+  Starting resourcemanager
+  Starting nodemanagers
+  
+  # 停止yarn
+  [hadoop@master hadoop]$ stop-yarn.sh
+  Stopping nodemanagers
+  slave1: WARNING: nodemanager did not stop gracefully after 5 seconds: Trying to kill with kill -9
+  slave2: WARNING: nodemanager did not stop gracefully after 5 seconds: Trying to kill with kill -9
+  Stopping resourcemanager
   ```
 
-  
-
-
-
-
-
-
+#### 3.3.3 HA
 
 ### 3.4 启动及访问
 
