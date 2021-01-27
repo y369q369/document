@@ -1061,7 +1061,7 @@ Mode: follower
 2992 QuorumPeerMain
 ```
 
-> 启动journalnode
+> 启动 journalnode
 
 ```
 # 启动（3个节点）
@@ -1092,7 +1092,7 @@ active
 standby
 ```
 
-> 启动hdfs
+> 启动 hdfs
 
 ```
 # 格式化zkfc ( master )
@@ -1124,7 +1124,7 @@ standby
 3517 Jps
 ```
 
-> 启动yarn
+> 启动 yarn
 
 ```
 # 一键启动yarn ( master )
@@ -1142,7 +1142,7 @@ Starting nodemanagers
 3390 JournalNode
 ```
 
->  启动mapreduce任务历史服务器 
+>  启动 mapreduce任务历史服务器 
 
 ```
 # 启动 （master）
