@@ -1222,3 +1222,17 @@ Starting nodemanagers
   ```
 
   解决方案参考： https://blog.csdn.net/lglglgl/article/details/80553828
+
+- window上用api时访问hadoop时，报错
+
+  ```
+  java.io.FileNotFoundException: java.io.FileNotFoundException: HADOOP_HOME and hadoop.home.dir are unset. -see https://wiki.apache.org/hadoop/WindowsProblems
+  ```
+
+  解决：系统环境变量中新增 HADOOP_HOME 即可
+
+  ```
+  could not locate Hadoop executable: G:\software\hadoop\hadoop-3.3.0\bin\winutils.exe
+  ```
+
+  解决：下载winutils.exe相关文件放到hadoop/bin目录下，下载地址：https://gitee.com/jiashu_wu/winutils

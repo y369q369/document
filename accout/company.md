@@ -41,12 +41,12 @@ VPN连接属性里找到“网络”--点选“Internet协议（TCP/IPV4”--按
 | 机房桌面         | chencheng     | abc@123   | 陈诚                             |
 | 机房桌面         | chenshengjian | cHEN1988  | 陈胜建                           |
 | slsjump.jsrcb    | 15251773100   | jsnx2019_ | 孙成宇的JumpServer               |
-| slsjump.jsrcb    | 18168004386   | abc@123   | 陈诚的JumpServer                 |
+| slsjump.jsrcb    | 18100623389   | abc@123   | 陈诚的JumpServer                 |
 | 32.3.72.21       | root          | 123456    | 21(可多试几个)节点的root账号密码 |
 | 32.12.224.20     | root          | jsnx@1234 | 20节点root密码s                  |
 | 32.3.78.101:8180 | admin         | TdhPro524 | 主节点的manager页面(孙成宇)      |
 | 66.6.52.189      | dsadm         | dsadmin   | 加载机                           |
-|                  |               |           |                                  |
+|                  | 18168004386   | abc@123   |                                  |
 |                  | 18168004386   | P@ssw0rd  |                                  |
 
 #### 测试服务器
