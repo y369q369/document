@@ -163,11 +163,11 @@
 
   > 选择[Apache ZooKeeper 3.6.2](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.6.2/apache-zookeeper-3.6.2-bin.tar.gz)([asc](https://downloads.apache.org/zookeeper/zookeeper-3.6.2/apache-zookeeper-3.6.2-bin.tar.gz.asc), [sha512](https://downloads.apache.org/zookeeper/zookeeper-3.6.2/apache-zookeeper-3.6.2-bin.tar.gz.sha512))下载， [Apache ZooKeeper 3.6.2 Source Release](https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.6.2/apache-zookeeper-3.6.2.tar.gz)([asc](https://downloads.apache.org/zookeeper/zookeeper-3.6.2/apache-zookeeper-3.6.2.tar.gz.asc), [sha512](https://downloads.apache.org/zookeeper/zookeeper-3.6.2/apache-zookeeper-3.6.2.tar.gz.sha512))下载后需要自行编译
 
-- 3.6.2：https://www.apache.org/dyn/closer.lua/zookeeper/zookeeper-3.6.2/apache-zookeeper-3.6.2-bin.tar.gz
+- 3.6.2：https://mirror.bit.edu.cn/apache/zookeeper/zookeeper-3.6.2/apache-zookeeper-3.6.2-bin.tar.gz
 
 ### 2.3 部署
 
-- 文件位置：	/opt/.3.0/zookeeper
+- 文件位置：	/opt/zookeeper
 
 - 版本：3.6.2
 
@@ -297,7 +297,7 @@
 
   > 说明：选择**Binary download**的镜像源下载，解压可直接使用
 
-- 3.3.0：[https://mirror.bit.edu.cn/apache/hadoop/common/hadoop-3.3.0/hadoop-3.3.0.tar.gz](https://mirror.bit.edu.cn/apache/hadoop/common/hadoop-3.3.0/hadoop-3.3.0.tar.gz)
+- 3.3.0：https://mirror.bit.edu.cn/apache/hadoop/common/hadoop-3.3.0/hadoop-3.3.0.tar.gz
 
 ### 3.3 部署
 
@@ -1236,3 +1236,131 @@ Starting nodemanagers
   ```
 
   解决：下载winutils.exe相关文件放到hadoop/bin目录下，下载地址：https://gitee.com/jiashu_wu/winutils
+
+## 4. hbase
+
+### 4.1 依赖
+
+- JDK
+
+### 4.2 下载
+
+- 官网：http://hbase.apache.org/downloads.html
+
+  > 说明：选择 **bin** 的镜像源下载，解压可直接使用
+
+- 2.4.1：https://mirror.bit.edu.cn/apache/hbase/2.4.1/hbase-2.4.1-bin.tar.gz
+
+- 2.3.4：https://mirror.bit.edu.cn/apache/hbase/2.3.4/hbase-2.3.4-bin.tar.gz
+
+### 4.3 部署
+
+#### 4.3.0 前置工作
+
+- 文件位置：	/opt/hbase
+
+- 版本：2.3.4
+
+- 解压
+
+  ```
+  tar -zxf hbase-2.3.4-bin.tar.gz -C /opt/hbase
+  ```
+
+- 设置环境变量
+
+  > [root@master apache-zookeeper-3.6.2-bin]# vim /etc/profile
+
+  ```
+  #HBASE_HOME
+  export HBASE_HOME=/opt/hbase/hbase-2.3.4
+  export PATH=$PATH:$HBASE_HOME/bin
+  ```
+
+  > [root@master apache-zookeeper-3.6.2-bin]# source /etc/profile
+
+- 对外访问端口
+
+  9000
+
+  > 操作
+
+  ```
+  [root@slave2 ~]# firewall-cmd --list-ports
+  
+  [root@slave2 ~]# firewall-cmd --zone=public --add-port=9000/tcp --add-port=9870/tcp--add-port=9820/tcp --add-port=9869/tcp --add-port=9868/tcp --add-port=9867/tcp --add-port=9866/tcp --add-port=9865/tcp --add-port=9864/tcp --add-port=8088/tcp --add-port=9000/tcp --permanent
+  success
+  
+  [root@slave2 ~]# firewall-cmd --reload
+  success
+  
+  [root@slave2 ~]# firewall-cmd --list-ports
+  3888/tcp 2888/tcp 2181/tcp 9871/tcp 9870/tcp 9869/tcp 9868/tcp 9867/tcp 9866/tcp 9865/tcp 9864/tcp 8088/tcp 9000/tcp
+  ```
+
+  
+
+#### 4.3.1 单机部署
+
+##### 参考 
+
+https://blog.csdn.net/zhangjunli/article/details/111035332
+
+##### 配置文件
+
+```
+# 切换到配置文件目录
+cd opt/hbase/hbase-2.3.4/conf
+```
+
+> **hbase-env.sh**
+
+```
+# 修改JAVA_HOME
+export JAVA_HOME=/usr/java/jdk1.8.0_221
+```
+
+> **hbase-site.xml**
+
+```
+<configuration>
+        <property>
+                <name>hbase.cluster.distributed</name>
+                <value>false</value>
+        </property>
+        <property>
+                <name>hbase.tmp.dir</name>
+                <value>/opt/hbase/hbase-2.3.4/tmp</value>
+         </property>
+         <property>
+                 <name>hbase.unsafe.stream.capability.enforce</name>
+                 <value>false</value>
+         </property>
+         <property>
+                <name>hbase.rootdir</name>
+                <value>/opt/hbase/hbase-2.3.4/data</value>
+        </property>
+</configuration>
+```
+
+##### 启停
+
+```
+# 启动
+[root@centos-73 conf]# start-hbase.sh 
+running master, logging to /opt/hbase/hbase-2.3.4/logs/hbase-root-master-centos-73.out
+
+# 停止
+[root@centos-73 conf]# stop-hbase.sh 
+stopping hbase.cd.^H...........
+```
+
+
+
+
+
+hadoop版本匹配
+
+http://hbase.apache.org/book.html
+
+搜索关键词： *Hadoop version support matrix* 
