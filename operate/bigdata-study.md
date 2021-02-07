@@ -1313,6 +1313,8 @@ https://blog.csdn.net/zhangjunli/article/details/111035332
 cd opt/hbase/hbase-2.3.4/conf
 ```
 
+- **使用自带zk**
+
 > **hbase-env.sh**
 
 ```
@@ -1346,6 +1348,44 @@ export HBASE_DISABLE_HADOOP_CLASSPATH_LOOKUP="true"
 </configuration>
 ```
 
+- 使用外部zk
+
+> **hbase-env.sh**
+
+```
+# 修改JAVA_HOME
+export JAVA_HOME=/usr/java/jdk1.8.0_221
+
+# 是否启用内部zk管理
+export HBASE_MANAGES_ZK=false
+
+# 禁止使用hadoop的jar包
+export HBASE_DISABLE_HADOOP_CLASSPATH_LOOKUP="true"
+```
+
+> **hbase-site.xml**
+
+```
+<configuration>
+        <property>
+                <name>hbase.cluster.distributed</name>
+                <value>true</value>
+        </property>
+        <property>
+                <name>hbase.tmp.dir</name>
+                <value>/opt/hbase/hbase-2.3.4/tmp</value>
+         </property>
+         <property>
+                 <name>hbase.unsafe.stream.capability.enforce</name>
+                 <value>false</value>
+         </property>
+         <property>
+                <name>hbase.rootdir</name>
+                <value>/opt/hbase/hbase-2.3.4/data</value>
+        </property>
+</configuration>
+```
+
 ##### 启停
 
 ```
@@ -1356,9 +1396,51 @@ running master, logging to /opt/hbase/hbase-2.3.4/logs/hbase-root-master-centos-
 # 停止
 [root@centos-73 conf]# stop-hbase.sh 
 stopping hbase.cd.^H...........
+
+# 使用shell
+[root@centos-73 ~]# hbase shell
+2021-02-07 21:47:10,856 WARN  [main] util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+HBase Shell
+Use "help" to get list of supported commands.
+Use "exit" to quit this interactive shell.
+For Reference, please visit: http://hbase.apache.org/2.0/book.html#shell
+Version 2.4.1, rb4d9639f66fccdb45fea0244202ffbd755341260, Fri Jan 15 10:58:57 PST 2021
+Took 0.0016 seconds 
 ```
 
 
+
+#### 4.4 shell命令
+
+> 命令地址： /opt/hbase/hbase-2.3.4/bin/hbase
+
+| 命令        | 说明                                                         | 示例                                                         |
+| ----------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| version     | 返回hbase版本信息                                            | version                                                      |
+| status      | 返回hbase集群的状态信息                                      | status                                                       |
+| table_help  | 查看如何操作表                                               | table_help                                                   |
+| create      | 创建表                                                       | create ‘表名’, ‘列族名1’, ‘列族名2’... ‘列族名N’             |
+| alter       | 修改列族                                                     | 添加一个列族：alter ‘表名’, ‘列族名’ 删除列族：alter ‘表名’, {NAME=> ‘列族名’, METHOD=> ‘delete’} |
+| describe    | 显示表相关的详细信息                                         | describe/desc ‘表名’                                         |
+| list        | 列出hbase中存在的所有表                                      | list                                                         |
+| exists      | 测试表是否存在                                               | exists ‘表名’                                                |
+| put         | 添加或修改的表的值                                           | put ‘表名’, ‘行键’, ‘列族名’, ‘列值’ put ‘表名’, ‘行键’, ‘列族名:列名’, ‘列值’ |
+| scan        | 通过对表的扫描来获取对用的值                                 | scan ‘表名’ <br/>扫描某个列族： scan ‘表名’, {COLUMN=>‘列族名’} <br/>扫描某个列族的某个列： scan ‘表名’, {COLUMN=>‘列族名:列名’} <br/>查询同一个列族的多个列： scan ‘表名’, {COLUMNS => [ ‘列族名1:列名1’, ‘列族名1:列名2’, …]} |
+| get         | 获取行或单元（cell）的值                                     | get ‘表名’, ‘行键’ get ‘表名’, ‘行键’, ‘列族名’              |
+| count       | 统计表中行的数量                                             | count ‘表名’                                                 |
+| incr        | 增加指定表行或列的值                                         | incr ‘表名’, ‘行键’, ‘列族:列名’, 步长值                     |
+| get_counter | 获取计数器                                                   | get_counter ‘表名’, ‘行键’, ‘列族:列名’                      |
+| delete      | 删除指定对象的值（可以为表，行，列对应的值，另外也可以指定时间戳的值） | 删除列族的某个列： delete ‘表名’, ‘行键’, ‘列族名:列名’      |
+| deleteall   | 删除指定行的所有元素值                                       | deleteall ‘表名’, ‘行键’                                     |
+| truncate    | 重新创建指定表                                               | truncate ‘表名’                                              |
+| enable      | 使表有效                                                     | enable ‘表名’                                                |
+| is_enabled  | 是否启用                                                     | is_enabled ‘表名’                                            |
+| disable     | 使表无效                                                     | disable ‘表名’                                               |
+| is_disabled | 是否无效                                                     | is_disabled ‘表名’                                           |
+| drop        | 删除表（drop的表必须是disable的）                            | disable ‘表名’ drop ‘表名’                                   |
+| shutdown    | 关闭hbase集群（与exit不同）                                  |                                                              |
+| tools       | 列出hbase所支持的工具                                        |                                                              |
+| exit        | 退出hbase shell                                              |                                                              |
 
 
 
