@@ -1318,6 +1318,9 @@ cd opt/hbase/hbase-2.3.4/conf
 ```
 # 修改JAVA_HOME
 export JAVA_HOME=/usr/java/jdk1.8.0_221
+
+# 禁止使用hadoop的jar包
+export HBASE_DISABLE_HADOOP_CLASSPATH_LOOKUP="true"
 ```
 
 > **hbase-site.xml**
