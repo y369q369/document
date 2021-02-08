@@ -393,19 +393,19 @@
 
 - 对外访问端口
 
-| service      | name                                 | 2.x端口 | 3.x端口 | desc                                                         |
-| ------------ | ------------------------------------ | ------- | ------- | ------------------------------------------------------------ |
-| hdfs         | fs.default.name                      | 9000    | 9000    | hdfs默认端口                                                 |
-| Namenode     | dfs.namenode.https-address           | 50470   | 9871    | The namenode secure http server address and port.            |
-|              | dfs.namenode.http-address            | 50070   | 9870    | The address and the base port where the dfs namenode web ui will listen on. |
-|              | fs.defaultFS                         | 8020    | 9820    | 指定HDFS运行时nameNode地址                                   |
-| Secondary NN | dfs.namenode.secondary.https-address | 50091   | 9869    | The secondary namenode HTTPS server address and port         |
-|              | dfs.namenode.secondary.http-address  | 50090   | 9868    | The secondary namenode HTTPS server address and port         |
-| Datanode     | dfs.datanode.ipc.address             | 50020   | 9867    | The datanode ipc server address and port.                    |
-|              | dfs.datanode.address                 | 50010   | 9866    | The datanode server address and port for data transfer.      |
-|              | dfs.datanode.https.address           | 50475   | 9865    | The datanode secure http server address and port             |
-|              | dfs.datanode.http.address            | 50075   | 9864    | The datanode http server address and por                     |
-| Yarn         | yarn.resourcemanager.webapp.address  | 8088    | 8088    | http服务端口                                                 |
+| service      | name                                 | 2.x port | 3.x port | desc                                                         |
+| ------------ | ------------------------------------ | -------- | -------- | ------------------------------------------------------------ |
+| hdfs         | fs.default.name                      | 9000     | 9000     | hdfs默认端口                                                 |
+| Namenode     | dfs.namenode.https-address           | 50470    | 9871     | The namenode secure http server address and port.            |
+|              | dfs.namenode.http-address            | 50070    | 9870     | The address and the base port where the dfs namenode web ui will listen on. |
+|              | fs.defaultFS                         | 8020     | 9820     | 指定HDFS运行时nameNode地址                                   |
+| Secondary NN | dfs.namenode.secondary.https-address | 50091    | 9869     | The secondary namenode HTTPS server address and port         |
+|              | dfs.namenode.secondary.http-address  | 50090    | 9868     | The secondary namenode HTTPS server address and port         |
+| Datanode     | dfs.datanode.ipc.address             | 50020    | 9867     | The datanode ipc server address and port.                    |
+|              | dfs.datanode.address                 | 50010    | 9866     | The datanode server address and port for data transfer.      |
+|              | dfs.datanode.https.address           | 50475    | 9865     | The datanode secure http server address and port             |
+|              | dfs.datanode.http.address            | 50075    | 9864     | The datanode http server address and por                     |
+| Yarn         | yarn.resourcemanager.webapp.address  | 8088     | 8088     | http服务端口                                                 |
 
 > 操作
 
@@ -1161,7 +1161,7 @@ Starting nodemanagers
 
 ### 3.4 访问
 
-- 访问：http://192.168.72.133:9870
+- 地址：http://192.168.72.133:9870
 
 ### 3.5 服务命令
 
@@ -1281,23 +1281,27 @@ Starting nodemanagers
 
 - 对外访问端口
 
-  9000
-
-  > 操作
-
-  ```
-  [root@slave2 ~]# firewall-cmd --list-ports
+  | service       | name                         | port  | port             |
+| ------------- | ---------------------------- | ----- | ---------------- |
+  | HMaster       | hbase.master.port            | 16000 | RegionServer接入 |
+| HMaster       | hbase.master.info.port       | 16010 | 集群监控         |
+  | HRegionServer | hbase.regionserver.port      | 16020 | 客户端接入       |
+  | HRegionServer | hbase.regionserver.info.port | 16030 | 节点监控         |
   
-  [root@slave2 ~]# firewall-cmd --zone=public --add-port=9000/tcp --add-port=9870/tcp--add-port=9820/tcp --add-port=9869/tcp --add-port=9868/tcp --add-port=9867/tcp --add-port=9866/tcp --add-port=9865/tcp --add-port=9864/tcp --add-port=8088/tcp --add-port=9000/tcp --permanent
+  9000
+  
+  > 操作
+  
+  ```
+  [root@slave2 ~]# firewall-cmd --zone=public --add-port=16000/tcp --add-port=16010/tcp--add-port=16020/tcp --add-port=16030/tcp --permanent
   success
   
   [root@slave2 ~]# firewall-cmd --reload
-  success
+success
   
   [root@slave2 ~]# firewall-cmd --list-ports
-  3888/tcp 2888/tcp 2181/tcp 9871/tcp 9870/tcp 9869/tcp 9868/tcp 9867/tcp 9866/tcp 9865/tcp 9864/tcp 8088/tcp 9000/tcp
   ```
-
+  
   
 
 #### 4.3.1 单机部署
@@ -1410,7 +1414,11 @@ Took 0.0016 seconds
 
 
 
-#### 4.4 shell命令
+#### 4.4 访问
+
+- 地址： http://120.26.184.85:16010/master-status
+
+#### 4.5 shell命令
 
 > 命令地址： /opt/hbase/hbase-2.3.4/bin/hbase
 
@@ -1442,10 +1450,10 @@ Took 0.0016 seconds
 | tools       | 列出hbase所支持的工具                                        |                                                              |
 | exit        | 退出hbase shell                                              |                                                              |
 
+#### 4.6 说明
 
+##### 4.6.1 hadoop版本匹配
 
-hadoop版本匹配
-
-http://hbase.apache.org/book.html
+官网文档： http://hbase.apache.org/book.html
 
 搜索关键词： *Hadoop version support matrix* 
