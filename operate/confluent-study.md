@@ -29,7 +29,8 @@
   
      ```
      官网地址：  https://www.confluent.io/download/?_ga=2.258962954.1696288973.1592612668-453778093.1576842144
-     直链地址：  https://packages.confluent.io/archive/6.0/confluent-6.0.0.tar.gz
+     直链地址：  https://packages.confluent.io/archive/6.1/confluent-6.1.0.tar.gz
+               https://packages.confluent.io/archive/6.0/confluent-6.0.0.tar.gz
                https://packages.confluent.io/archive/5.5/confluent-5.5.1-2.12.tar.gz
                https://packages.confluent.io/archive/5.4/confluent-5.4.2-2.12.tar.gz
                https://packages.confluent.io/archive/5.3/confluent-5.3.4-2.12.tar.gz
@@ -39,26 +40,26 @@
         https://packages.confluent.io/archive/5.3/confluent-community-5.3.4-2.12.tar.gz
      
      解压：     tar -zxf confluent-5.5.1-2.12.tar.gz -C /repository/confluent
-     ```
-  
-     - 配置环境变量 (可不配，直接取目录下执行)
-  
+  ```
+     
+  - 配置环境变量 (可不配，直接取目录下执行)
+     
      ```
      export CONFLUENT_HOME=/repository/confluent/confluent-5.5.1
      export PATH=$PATH:$CONFLUENT_HOME/bin
-     ```
-  
-     - confluent-hub (正式版自带)
-
+  ```
+     
+- confluent-hub (正式版自带)
+     
      ```
      作用： 管理connector的工具，可在线下载已有的connector
      官网： https://docs.confluent.io/current/connect/managing/confluent-hub/client.html#hub-linux
      下载： http://client.hub.confluent.io/confluent-hub-client-latest.tar.gz?_ga=2.225202706.983708684.1601083707-453778093.1576842144
      安装： 将解压后的 bin/ etc/ share/java/ 目录下文件放到 $CONFLUENT_HOME 对应目录下
-     ```
-  
-     - Confluent Cli (正式版 5.3 以上可不用)
-  
+  ```
+     
+  - Confluent Cli (正式版 5.3 以上可不用)
+     
      ```
      作用：获取confluent的启动脚本
      方式一(乱码)：
@@ -72,10 +73,10 @@
        注意： 生成的 $CONFLUENT_HOME}/bin/confluent 执行时 如若报错/usr/bin/env: “bash\r”: 没有那个文件或目录， 需要将编码格式更换， 参考
              https://blog.csdn.net/qq_32642107/article/details/90677061
              https://blog.csdn.net/xiongchun11/article/details/78832947
-     ```
-  
-     - Kafka Connect Datagen（基于confluent-hub）
-  
+  ```
+     
+  - Kafka Connect Datagen（基于confluent-hub）
+     
      ```
      作用： kafka-connector的模拟数据demo
      安装： $CONFLUENT_HOME/bin/confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest
@@ -93,10 +94,10 @@
        /repository/confluent/confluent-5.3.4/etc/schema-registry/connect-avro-standalone.properties 
       
      Completed 
-     ```
-  
-     - 相关命令
-  
+  ```
+     
+  - 相关命令
+     
      ```
      ./confluent
      confluent: A command line interface to manage Confluent services
@@ -125,8 +126,8 @@
      
      'confluent help' lists available commands. See 'confluent help <command>' to read about a
      specific command.
-     ```
-  
+  ```
+     
      
   
   

@@ -1194,7 +1194,7 @@ Starting nodemanagers
 
 ### 3.7 说明
 
-#### 3.7.1 jps进程说明
+####  jps进程说明
 
 | 进程名称                | 程序                                                         |
 | ----------------------- | ------------------------------------------------------------ |
@@ -1204,7 +1204,7 @@ Starting nodemanagers
 | DFSZKFailoverController | zkfc的故障转移                                               |
 | JobHistoryServer        | yarn日志聚合                                                 |
 
-#### 3.7.2 坑点
+#### 坑点
 
 - 建议 hadoop 用户使用服务命令启动，当使用root用户操作时，报错如下
 
@@ -1452,7 +1452,7 @@ Took 0.0016 seconds
 
 #### 4.6 说明
 
-##### 4.6.1 hadoop版本匹配
+##### hadoop版本匹配
 
 官网文档： http://hbase.apache.org/book.html
 
