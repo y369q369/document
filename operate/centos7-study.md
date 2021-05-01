@@ -384,9 +384,22 @@ source /etc/profile
   source /etc/profile
   ```
 
-  
 
 #### 4.4 设置sudo用户	
+
+- 新建用户
+
+  ```
+  useradd -m gs
+  ```
+
+- 改密
+
+  ```
+  passwd gs
+  ```
+
+##### 4.4.1 修改/etc/sudoers文件
 
 - 修改 /etc/sudoers
 
@@ -410,7 +423,23 @@ source /etc/profile
   gs      ALL=(ALL)       NOPASSWD:ALL
   ```
 
+##### 4.4.2 添加用户到sudo
+
+- ​	添加用户gs到sudo
+
+  ```
+  # 添加sudo用户组
+  groupadd sudo
   
+  # /etc/sudoers 添加sudo组的免密登录
+  %sudo ALL=(ALL) NOPASSWD: ALL
+  
+  # 第一种  添加用户到用户组
+  usermod -a -G sudo gs
+  
+  # 第二种 添加用户到主要组
+  usermod -g sudo gs
+  ```
 
 #### 4.5 修改语言
 
