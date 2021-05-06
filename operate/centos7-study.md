@@ -444,3 +444,31 @@ source /etc/profile
 #### 4.5 修改语言
 
 - 
+
+### 5. rpm包下载及安装
+
+> rpm下载管理工具
+
+```
+# 安装
+yum install -y yum-utils 
+
+# yumdownloader命令的使用
+yumdownloader --resolve --destdir=<文件下载地址> <软件名称>
+```
+
+> rpm操作
+
+```
+# 正常安装
+rpm -ivh <rpm包名>
+# 无视依赖强制安装
+rpm -ivh --force --nodeps <rpm包名>
+
+# 查看
+rpm -qa | grep <rpm包名>
+
+# 卸载
+rpm -e <rpm包名>
+```
+
