@@ -1,17 +1,19 @@
  <h1><center>elasticsearch学习过程</center></h1>
 ### 1. 安装
 
-### 1.1 centos7.5
+#### 1.1 centos7.5
 
-- 参考： https://www.cnblogs.com/zhenghengbin/p/12250234.html
+> 参考： https://www.cnblogs.com/zhenghengbin/p/12250234.html
 
-- 环境需求
+> 环境需求
 
-  > elasticsearch7 之后，默认需求jdk11
-  >
-  > 为保证安全性，不能用root启动
+- elasticsearch7 之后，默认需求jdk11
 
-  ```
+- 为保证安全性，不能用root启动
+
+- 不能用root用户启动，新增es用户
+
+  ```bash
   # 创建用户es
   useradd es
   
@@ -22,17 +24,18 @@
   su es
   ```
 
-- 获取安装包
+> 获取安装包
 
-  > 官网： https://www.elastic.co/cn/downloads/elasticsearch
-  >
-  > 下载：https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.0-linux-x86_64.tar.gz
+- 官网： https://www.elastic.co/cn/downloads/elasticsearch
 
-- 修改配置文件
 
-  >  核心配置文件：conf/elasticsearch.yml
+- 下载： https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.0-linux-x86_64.tar.gz
 
-  ```
+> 修改配置文件
+
+- 核心配置文件：conf/elasticsearch.yml
+
+  ```bash
   node.name: node-1
   
   path.data: /home/es/software/elasticsearch-7.10.0/data
@@ -45,9 +48,9 @@
   
   ```
 
-  > jvm参数：config/jvm.options
+- jvm参数：config/jvm.options
 
-  ```
+  ```bash
   # Xms represents the initial size of total heap space
   # Xmx represents the maximum size of total heap space
   
@@ -55,53 +58,53 @@
   -Xmx128m
   ```
 
-- 启动
+> 启动
 
-  ```
-  # 前台启动
-  bin/elasticsearch
-  
-  # 后台启动
-  bin/elasticsearch -d
-  ```
+```bash
+# 前台启动
+bin/elasticsearch
 
-- 错误处理
+# 后台启动
+bin/elasticsearch -d
+```
 
-  ```
-  ERROR: [3] bootstrap checks failed
-  [1]: max file descriptors [4096] for elasticsearch process is too low, increase to at least [65535]
-  [2]: max number of threads [3795] for user [esuser] is too low, increase to at least [4096]
-  [3]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
-  ```
+> 错误处理
 
-  > 修改  /etc/security/limits.conf 
+```
+ERROR: [3] bootstrap checks failed
+[1]: max file descriptors [4096] for elasticsearch process is too low, increase to at least [65535]
+[2]: max number of threads [3795] for user [esuser] is too low, increase to at least [4096]
+[3]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+```
 
-  ```
-  # 最下方增加下面内容
-  * soft nofile 65536
-  * hard nofile 131072
-  * soft nproc 2048
-  * hard nproc 4096
-  ```
+1. 修改  /etc/security/limits.conf 
 
-  >  /etc/sysctl.conf 
+   ```bash
+   # 最下方增加下面内容
+   * soft nofile 65536
+   * hard nofile 131072
+   * soft nproc 2048
+   * hard nproc 4096
+   ```
 
-  ```
-  # 最下方增加
-  vm.max_map_count=262145
-  
-  # 刷新sysctl
-  sysctl -p
-  
-  # 重新登陆es用户操作
-  su - es
-  ```
+2. 修改 /etc/sysctl.conf
 
-- 访问
+   ```bash
+   # 最下方增加
+   vm.max_map_count=262145
+   
+   # 刷新sysctl
+   sysctl -p
+   
+   # 重新登陆es用户操作
+   su - es
+   ```
 
-  ```
-  ip:9200
-  ```
+> 访问：    ip:9200
+
+#### 1.2 docker
+
+
 
 
 ### 3 api
