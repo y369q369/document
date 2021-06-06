@@ -317,7 +317,7 @@ public class TestAop1 {
 }
 ```
 
-> 
+> 动态实现方式
 
 #### 3.4 Spring优点
 
@@ -566,6 +566,12 @@ appendfsync no          #从不同步。高效但是数据不会被持久化。
 
 #### 6.4 高可用
 
+#### 6.5 客户端工具
+
+> RedisClient
+
+https://github.com/caoxinyu/RedisClient/releases
+
 ### 七、消息中间件
 
 #### 7.1 Kafka和RabbitMQ区别
@@ -734,3 +740,7 @@ appendfsync no          #从不同步。高效但是数据不会被持久化。
 ### 十、大数据
 
 #### 10.1 CDH集群
+
+#### 10.2 HBase 与 传统数据库区别
+
+#### 10.3 HBase Shell 命令
